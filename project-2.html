@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Axis DS — Design System · Rubén Olivier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:     #f5f3ef;
+      --white:  #ffffff;
+      --text:   #0c0c0c;
+      --muted:  #888880;
+      --accent: #0033ff;
+      --dark:   #0c0c0c;
+      --border: rgba(12,12,12,0.10);
+      --font-display: 'Non Natural Grotesk Plain', 'Syne', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+      --font-body:    'PP Neue Montreal', 'Inter', system-ui, sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px clamp(24px, 5vw, 80px); display: flex; align-items: center; justify-content: space-between; background: var(--bg); border-bottom: 1px solid var(--border); transition: background 0.35s var(--ease-out); }
+    .nav-name { font-family: var(--font-mono); font-size: 13px; font-weight: 500; letter-spacing: 0.02em; }
+    .nav-back { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--muted); display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .nav-back:hover { color: var(--text); }
+
+    #project-hero { padding-top: 120px; padding-bottom: clamp(48px, 6vw, 80px); background: var(--bg); }
+    .project-hero-inner { padding: 0 clamp(24px, 5vw, 80px); max-width: 1280px; margin: 0 auto; }
+    .project-hero-meta { display: flex; align-items: center; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .project-category { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+    .project-year { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); }
+    .project-hero-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(48px, 7vw, 112px); letter-spacing: -0.03em; line-height: 0.94; color: var(--text); max-width: 16ch; margin-bottom: clamp(32px, 4vw, 56px); }
+    .project-hero-title .accent { color: var(--accent); }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .project-tag { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--text); border: 1px solid var(--border); border-radius: 100px; padding: 5px 14px; }
+
+    .project-cover { width: 100%; aspect-ratio: 16 / 7; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .cover-axis { background: linear-gradient(135deg, #f0ede8 0%, #e8e4dc 40%, #d0ccc4 100%); }
+
+    .project-info-bar { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: clamp(24px, 3vw, 40px) clamp(24px, 5vw, 80px); }
+    .project-info-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+    @media (max-width: 768px) { .project-info-grid { grid-template-columns: repeat(2, 1fr); } }
+    .info-item-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+    .info-item-value { font-family: var(--font-mono); font-size: 14px; color: var(--text); line-height: 1.5; }
+
+    .project-section { padding: clamp(56px, 8vw, 112px) clamp(24px, 5vw, 80px); }
+    .project-section-inner { max-width: 1280px; margin: 0 auto; }
+    .project-section-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 20px; }
+    .project-section-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 3.5vw, 48px); letter-spacing: -0.02em; line-height: 1.05; margin-bottom: clamp(24px, 3vw, 40px); }
+    .project-body { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.75; color: var(--text); max-width: 680px; }
+    .project-body p + p { margin-top: 20px; }
+    .project-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 96px); align-items: start; }
+    @media (max-width: 768px) { .project-cols { grid-template-columns: 1fr; } }
+
+    .mockup { border-radius: 8px; overflow: hidden; background: #e8e4dc; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; }
+    .mockup.tall { aspect-ratio: 9 / 16; }
+    .mockup.wide { aspect-ratio: 16 / 9; }
+    .mockup-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+    .mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 2vw, 20px); }
+    @media (max-width: 600px) { .mockup-grid { grid-template-columns: 1fr; } }
+    .mockup-grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+    /* Component showcase */
+    .comp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(12px, 2vw, 20px); margin-top: clamp(32px, 4vw, 56px); }
+    @media (max-width: 768px) { .comp-grid { grid-template-columns: repeat(2, 1fr); } }
+    .comp-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+    .comp-card-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 16px; }
+    .comp-preview { display: flex; flex-direction: column; gap: 8px; }
+    .btn-sim { height: 32px; border-radius: 6px; }
+    .btn-primary { background: var(--accent); }
+    .btn-secondary { background: transparent; border: 1px solid var(--border); }
+    .btn-ghost { background: rgba(0,51,255,0.08); }
+    .input-sim { height: 36px; border: 1px solid var(--border); border-radius: 6px; }
+    .input-focused { border-color: var(--accent); }
+    .badge-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .badge-sim { height: 22px; border-radius: 100px; }
+    .badge-blue { width: 56px; background: rgba(0,51,255,0.12); }
+    .badge-grey { width: 44px; background: rgba(12,12,12,0.08); }
+    .badge-green { width: 52px; background: rgba(0,150,80,0.12); }
+    .swatch-row { display: flex; gap: 6px; }
+    .swatch { flex: 1; height: 28px; border-radius: 4px; }
+
+    /* Token table */
+    .token-table { margin-top: 32px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .token-row { display: grid; grid-template-columns: 32px 1fr 1fr; align-items: center; gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+    .token-row:last-child { border-bottom: none; }
+    .token-dot { width: 22px; height: 22px; border-radius: 50%; }
+    .token-name { font-family: var(--font-mono); font-size: 12px; color: var(--text); }
+    .token-val { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+    .outcomes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--border); margin-top: clamp(32px, 4vw, 56px); }
+    @media (max-width: 600px) { .outcomes-grid { grid-template-columns: 1fr; } }
+    .outcome-item { padding: clamp(24px, 3vw, 40px) 0; border-bottom: 1px solid var(--border); padding-right: 32px; }
+    .outcome-num { font-family: var(--font-mono); font-weight: 500; font-size: clamp(36px, 4vw, 56px); letter-spacing: -0.04em; color: var(--text); line-height: 1; margin-bottom: 8px; }
+    .outcome-num .accent { color: var(--accent); }
+    .outcome-desc { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+
+    #next-project { background: var(--dark); padding: clamp(64px, 10vw, 120px) clamp(24px, 5vw, 80px); }
+    .next-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+    .next-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 16px; }
+    .next-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(32px, 4vw, 56px); letter-spacing: -0.03em; color: var(--bg); line-height: 1.0; }
+    .next-arrow-btn { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; color: var(--bg); border: 1px solid rgba(245,243,239,0.2); border-radius: 100px; padding: 16px 28px; transition: background 0.25s, border-color 0.25s; white-space: nowrap; }
+    .next-arrow-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+    #footer { background: var(--bg); border-top: 1px solid var(--border); padding: 32px clamp(24px, 5vw, 80px); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-name { font-family: var(--font-mono); font-size: 13px; color: var(--text); }
+    .footer-copy { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-link { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; color: var(--muted); transition: color 0.2s; }
+    .footer-link:hover { color: var(--text); }
+    .section-divider { height: 1px; background: var(--border); max-width: 1280px; margin: 0 auto; }
+
+    .quote-block { border-left: 3px solid var(--accent); padding: 20px 28px; margin: 40px 0; background: var(--white); border-radius: 0 8px 8px 0; }
+    .quote-text { font-size: clamp(17px,1.6vw,22px); line-height: 1.6; font-style: italic; color: var(--text); }
+    .quote-attr { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-name">RUBÉN OLIVIER</a>
+    <a href="index.html#work" class="nav-back">← All Work</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="project-hero">
+    <div class="project-hero-inner">
+      <div class="project-hero-meta reveal">
+        <span class="project-category">Design Systems · B2B SaaS</span>
+        <span style="color:var(--border)">—</span>
+        <span class="project-year">2024</span>
+      </div>
+      <h1 class="project-hero-title reveal">
+        Axis —<br><span class="accent">Design</span><br>System
+      </h1>
+      <div class="project-tags reveal">
+        <span class="project-tag">Design System</span>
+        <span class="project-tag">Figma Variables</span>
+        <span class="project-tag">Tokens Studio</span>
+        <span class="project-tag">Component Library</span>
+        <span class="project-tag">Documentation</span>
+        <span class="project-tag">B2B SaaS</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- COVER -->
+  <div class="project-cover cover-axis reveal">
+    <div style="width:100%; height:100%; padding:clamp(24px,5vw,60px); display:flex; align-items:center; justify-content:center; gap:clamp(12px,2vw,24px);">
+      <!-- Component panel simulation -->
+      <div style="flex:2; height:100%; background:white; border-radius:12px; border:1px solid rgba(12,12,12,0.1); padding:20px; display:flex; flex-direction:column; gap:12px; max-width:520px;">
+        <div style="display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(12,12,12,0.08); padding-bottom:12px;">
+          <div style="width:10px; height:10px; border-radius:50%; background:#0033ff;"></div>
+          <div style="width:80px; height:6px; background:rgba(12,12,12,0.15); border-radius:3px;"></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+          <div style="height:28px; background:#0033ff; border-radius:5px;"></div>
+          <div style="height:28px; border:1px solid rgba(12,12,12,0.15); border-radius:5px;"></div>
+          <div style="height:28px; background:rgba(0,51,255,0.08); border-radius:5px;"></div>
+        </div>
+        <div style="height:34px; border:1px solid rgba(12,12,12,0.12); border-radius:5px;"></div>
+        <div style="height:34px; border:1px solid #0033ff; border-radius:5px;"></div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <div style="height:20px; width:52px; background:rgba(0,51,255,0.1); border-radius:100px;"></div>
+          <div style="height:20px; width:40px; background:rgba(12,12,12,0.07); border-radius:100px;"></div>
+          <div style="height:20px; width:60px; background:rgba(0,150,80,0.1); border-radius:100px;"></div>
+          <div style="height:20px; width:44px; background:rgba(230,80,0,0.1); border-radius:100px;"></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; flex:1;">
+          <div style="background:rgba(12,12,12,0.04); border-radius:6px; padding:10px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="width:70%; height:5px; background:rgba(12,12,12,0.12); border-radius:3px;"></div>
+            <div style="width:50%; height:5px; background:rgba(12,12,12,0.08); border-radius:3px;"></div>
+          </div>
+          <div style="background:rgba(0,51,255,0.05); border-radius:6px; border:1px solid rgba(0,51,255,0.15);"></div>
+        </div>
+      </div>
+      <!-- Token panel -->
+      <div style="flex:1; height:100%; background:rgba(12,12,12,0.04); border-radius:12px; border:1px solid rgba(12,12,12,0.08); padding:16px; display:flex; flex-direction:column; gap:10px; max-width:200px;">
+        <div style="width:70%; height:5px; background:rgba(12,12,12,0.2); border-radius:3px;"></div>
+        <div style="display:flex; flex-direction:column; gap:6px; flex:1;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:16px; height:16px; border-radius:50%; background:#0033ff; flex-shrink:0;"></div>
+            <div style="flex:1; height:5px; background:rgba(12,12,12,0.12); border-radius:3px;"></div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:16px; height:16px; border-radius:50%; background:#0c0c0c; flex-shrink:0;"></div>
+            <div style="flex:1; height:5px; background:rgba(12,12,12,0.12); border-radius:3px;"></div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:16px; height:16px; border-radius:50%; background:#f5f3ef; border:1px solid rgba(12,12,12,0.15); flex-shrink:0;"></div>
+            <div style="flex:1; height:5px; background:rgba(12,12,12,0.12); border-radius:3px;"></div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:16px; height:16px; border-radius:50%; background:#888880; flex-shrink:0;"></div>
+            <div style="flex:1; height:5px; background:rgba(12,12,12,0.12); border-radius:3px;"></div>
+          </div>
+          <div style="height:1px; background:rgba(12,12,12,0.08); margin:4px 0;"></div>
+          <div style="width:60%; height:5px; background:rgba(12,12,12,0.12); border-radius:3px;"></div>
+          <div style="height:20px; background:rgba(0,51,255,0.06); border-radius:4px;"></div>
+          <div style="height:20px; background:rgba(12,12,12,0.04); border-radius:4px;"></div>
+          <div style="height:20px; background:rgba(12,12,12,0.04); border-radius:4px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO BAR -->
+  <div class="project-info-bar">
+    <div class="project-info-grid">
+      <div>
+        <p class="info-item-label">Client</p>
+        <p class="info-item-value">Konfio · B2B SaaS</p>
+      </div>
+      <div>
+        <p class="info-item-label">Role</p>
+        <p class="info-item-value">Design System Lead</p>
+      </div>
+      <div>
+        <p class="info-item-label">Duration</p>
+        <p class="info-item-value">16 Weeks</p>
+      </div>
+      <div>
+        <p class="info-item-label">Tools</p>
+        <p class="info-item-value">Figma · Tokens Studio<br>Storybook · GitHub</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="project-section" style="background: var(--bg)">
+    <div class="project-section-inner project-cols">
+      <div class="reveal">
+        <p class="project-section-label">01 — Overview</p>
+        <h2 class="project-section-title">Three teams. Zero shared language.</h2>
+        <div class="project-body">
+          <p>Konfio's product had grown through three separate engineering squads, each building their own component library independently. The result: 47 different button styles in production, 3 conflicting spacing scales, and a handoff process that took designers and developers an average of 6 back-and-forth cycles per feature.</p>
+          <p>The mandate was to build Axis — a unified design system that would serve as the single source of truth for all product surfaces, with full Figma-to-code traceability via Tokens Studio and Storybook.</p>
+        </div>
+        <div class="quote-block" style="margin-top:32px">
+          <p class="quote-text">"We're shipping slower than a team half our size. We need a shared foundation before we can move fast."</p>
+          <p class="quote-attr">— VP of Product, Konfio</p>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:0.12s">
+        <div class="mockup" style="background:var(--white); border:1px solid var(--border); aspect-ratio:4/3;">
+          <div style="width:90%; height:90%; display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; gap:8px;">
+              <div style="width:16px; height:16px; border-radius:50%; background:#ff3b3b;"></div>
+              <div style="width:16px; height:16px; border-radius:50%; background:#ffbc00;"></div>
+              <div style="width:16px; height:16px; border-radius:50%; background:#28cd41;"></div>
+            </div>
+            <div style="display:flex; gap:10px; flex:1;">
+              <div style="width:140px; flex-shrink:0; display:flex; flex-direction:column; gap:6px; padding-right:10px; border-right:1px solid rgba(12,12,12,0.08);">
+                <div style="height:5px; width:80%; background:rgba(12,12,12,0.15); border-radius:3px;"></div>
+                <div style="height:24px; background:rgba(0,51,255,0.08); border-radius:4px; border-left:2px solid #0033ff;"></div>
+                <div style="height:24px; background:rgba(12,12,12,0.04); border-radius:4px;"></div>
+                <div style="height:24px; background:rgba(12,12,12,0.04); border-radius:4px;"></div>
+                <div style="height:24px; background:rgba(12,12,12,0.04); border-radius:4px;"></div>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
+                <div style="height:7px; width:60%; background:rgba(12,12,12,0.18); border-radius:3px;"></div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <div style="height:26px; width:64px; background:#0033ff; border-radius:4px;"></div>
+                  <div style="height:26px; width:64px; border:1px solid rgba(12,12,12,0.15); border-radius:4px;"></div>
+                  <div style="height:26px; width:64px; background:rgba(0,51,255,0.07); border-radius:4px;"></div>
+                </div>
+                <div style="height:28px; border:1px solid rgba(12,12,12,0.12); border-radius:4px;"></div>
+                <div style="flex:1; background:rgba(12,12,12,0.03); border-radius:6px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- COMPONENT SHOWCASE -->
+  <section class="project-section" style="background: var(--white)">
+    <div class="project-section-inner">
+      <p class="project-section-label reveal">02 — Components</p>
+      <h2 class="project-section-title reveal">82 components. 4 themes. One source.</h2>
+      <div class="project-body reveal">
+        <p>Every component in Axis is atomic-first: built from tokens, documented with usage guidelines, and wired to a Storybook story. Variants cover all states — default, hover, active, disabled, loading, error — so developers never have to ask "what does this look like when it fails?"</p>
+      </div>
+
+      <div class="comp-grid reveal" style="transition-delay:0.1s">
+        <div class="comp-card">
+          <p class="comp-card-label">Buttons</p>
+          <div class="comp-preview">
+            <div class="btn-sim btn-primary"></div>
+            <div class="btn-sim btn-secondary"></div>
+            <div class="btn-sim btn-ghost"></div>
+          </div>
+        </div>
+        <div class="comp-card">
+          <p class="comp-card-label">Inputs</p>
+          <div class="comp-preview">
+            <div class="input-sim"></div>
+            <div class="input-sim input-focused"></div>
+            <div class="input-sim" style="border-color:#cc0000; opacity:0.6;"></div>
+          </div>
+        </div>
+        <div class="comp-card">
+          <p class="comp-card-label">Badges</p>
+          <div class="comp-preview">
+            <div class="badge-row">
+              <div class="badge-sim badge-blue"></div>
+              <div class="badge-sim badge-grey"></div>
+              <div class="badge-sim badge-green"></div>
+            </div>
+            <div class="badge-row" style="margin-top:8px">
+              <div class="badge-sim" style="width:70px; height:22px; background:rgba(230,80,0,0.1); border-radius:100px;"></div>
+              <div class="badge-sim badge-grey" style="width:36px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="comp-card">
+          <p class="comp-card-label">Color Tokens</p>
+          <div class="comp-preview">
+            <div class="swatch-row">
+              <div class="swatch" style="background:#0033ff;"></div>
+              <div class="swatch" style="background:#0c0c0c;"></div>
+              <div class="swatch" style="background:#f5f3ef; border:1px solid rgba(12,12,12,0.1);"></div>
+              <div class="swatch" style="background:#888880;"></div>
+            </div>
+            <div class="swatch-row" style="margin-top:8px">
+              <div class="swatch" style="background:#002299;"></div>
+              <div class="swatch" style="background:#1a1a1a;"></div>
+              <div class="swatch" style="background:#e8e4dc; border:1px solid rgba(12,12,12,0.1);"></div>
+              <div class="swatch" style="background:#b0b0a8;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREENS GRID -->
+  <section class="project-section" style="background: var(--white); padding-top:0">
+    <div class="project-section-inner">
+      <div class="mockup-grid reveal">
+        <div class="mockup" style="background:#f8f6f2; border:1px solid var(--border); aspect-ratio:4/3;">
+          <div style="width:88%; height:88%; display:flex; flex-direction:column; gap:10px;">
+            <div style="width:55%; height:6px; background:rgba(12,12,12,0.18); border-radius:3px;"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; flex:1;">
+              <div style="background:rgba(0,51,255,0.08); border-radius:6px;"></div>
+              <div style="background:rgba(12,12,12,0.05); border-radius:6px;"></div>
+              <div style="background:rgba(12,12,12,0.05); border-radius:6px;"></div>
+              <div style="background:rgba(0,51,255,0.04); border-radius:6px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup" style="background:#0c0c0c; aspect-ratio:4/3;">
+          <div style="width:88%; height:88%; display:flex; flex-direction:column; gap:10px;">
+            <div style="width:50%; height:6px; background:rgba(0,51,255,0.7); border-radius:3px;"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; flex:1;">
+              <div style="background:rgba(0,51,255,0.25); border-radius:6px;"></div>
+              <div style="background:rgba(255,255,255,0.06); border-radius:6px;"></div>
+              <div style="background:rgba(255,255,255,0.06); border-radius:6px;"></div>
+              <div style="background:rgba(0,51,255,0.15); border-radius:6px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup" style="background:#f5f3ef; border:1px solid var(--border); aspect-ratio:4/3;">
+          <div style="width:88%; height:88%; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; gap:8px; padding-bottom:8px; border-bottom:1px solid rgba(12,12,12,0.08);">
+              <div style="width:16px; height:16px; border-radius:50%; background:#0033ff;"></div>
+              <div style="width:60%; height:6px; align-self:center; background:rgba(12,12,12,0.15); border-radius:3px;"></div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+              <div style="height:28px; background:rgba(12,12,12,0.06); border-radius:4px;"></div>
+              <div style="height:28px; background:rgba(12,12,12,0.06); border-radius:4px;"></div>
+              <div style="height:28px; background:rgba(0,51,255,0.1); border-radius:4px; border-left:2px solid #0033ff;"></div>
+              <div style="height:28px; background:rgba(12,12,12,0.04); border-radius:4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- PROCESS -->
+  <section class="project-section" style="background: var(--bg)">
+    <div class="project-section-inner">
+      <p class="project-section-label reveal">03 — Architecture</p>
+      <h2 class="project-section-title reveal">Tokens as the foundation</h2>
+      <div class="project-cols" style="margin-top: clamp(32px,4vw,56px)">
+        <div class="reveal">
+          <div class="project-body">
+            <p>Axis is built on a three-tier token architecture: primitives define raw values, semantic tokens map intent to primitives, and component tokens bind semantic tokens to specific properties.</p>
+            <p>This means switching the platform from light to dark mode — or deploying a white-label variant for a new client — is a token swap, not a redesign. The system shipped with 4 themes out of the box: Light, Dark, Brand, and Compact (for data-dense views).</p>
+          </div>
+          <div class="token-table reveal" style="margin-top:28px; transition-delay:0.1s">
+            <div class="token-row" style="background:rgba(12,12,12,0.02);">
+              <div class="token-dot" style="background:#0033ff;"></div>
+              <span class="token-name">color.brand.primary</span>
+              <span class="token-val">#0033FF</span>
+            </div>
+            <div class="token-row">
+              <div class="token-dot" style="background:#0c0c0c;"></div>
+              <span class="token-name">color.text.default</span>
+              <span class="token-val">#0C0C0C</span>
+            </div>
+            <div class="token-row" style="background:rgba(12,12,12,0.02);">
+              <div class="token-dot" style="background:#f5f3ef; border:1px solid var(--border);"></div>
+              <span class="token-name">color.surface.default</span>
+              <span class="token-val">#F5F3EF</span>
+            </div>
+            <div class="token-row">
+              <div class="token-dot" style="background:#888880;"></div>
+              <span class="token-name">color.text.muted</span>
+              <span class="token-val">#888880</span>
+            </div>
+          </div>
+        </div>
+        <div class="reveal" style="transition-delay:0.12s">
+          <div style="background:var(--white); border:1px solid var(--border); border-radius:8px; padding:24px;">
+            <p style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; margin-bottom:20px;">Token Layers</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div style="padding:14px; background:rgba(0,51,255,0.06); border:1px solid rgba(0,51,255,0.15); border-radius:6px;">
+                <p style="font-family:var(--font-mono); font-size:11px; color:var(--accent); letter-spacing:0.1em; margin-bottom:4px;">COMPONENT TOKENS</p>
+                <p style="font-size:13px; color:var(--muted);">button.bg → action.primary</p>
+              </div>
+              <div style="display:flex; justify-content:center; font-family:var(--font-mono); font-size:14px; color:var(--muted);">↑</div>
+              <div style="padding:14px; background:rgba(12,12,12,0.04); border:1px solid var(--border); border-radius:6px;">
+                <p style="font-family:var(--font-mono); font-size:11px; color:var(--text); letter-spacing:0.1em; margin-bottom:4px;">SEMANTIC TOKENS</p>
+                <p style="font-size:13px; color:var(--muted);">action.primary → brand.500</p>
+              </div>
+              <div style="display:flex; justify-content:center; font-family:var(--font-mono); font-size:14px; color:var(--muted);">↑</div>
+              <div style="padding:14px; background:rgba(12,12,12,0.02); border:1px solid var(--border); border-radius:6px;">
+                <p style="font-family:var(--font-mono); font-size:11px; color:var(--text); letter-spacing:0.1em; margin-bottom:4px;">PRIMITIVE TOKENS</p>
+                <p style="font-size:13px; color:var(--muted);">brand.500 → #0033FF</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FULL WIDTH -->
+  <div class="project-cover" style="background:linear-gradient(135deg, #f0ede8 0%, #e8e4dc 50%, #d0ccc4 100%); aspect-ratio:16/5;">
+    <div style="width:100%; height:100%; padding:clamp(20px,4vw,60px); display:flex; align-items:center; justify-content:center; gap:clamp(10px,2vw,20px);">
+      <div style="flex:1; max-width:180px; height:80%; background:white; border-radius:10px; border:1px solid rgba(12,12,12,0.1); display:flex; flex-direction:column; padding:14px; gap:8px;">
+        <div style="height:5px; width:70%; background:rgba(12,12,12,0.2); border-radius:3px;"></div>
+        <div style="height:24px; background:#0033ff; border-radius:4px;"></div>
+        <div style="height:24px; border:1px solid rgba(12,12,12,0.15); border-radius:4px;"></div>
+        <div style="flex:1; background:rgba(12,12,12,0.04); border-radius:4px;"></div>
+      </div>
+      <div style="flex:2; max-width:360px; height:80%; background:white; border-radius:10px; border:1px solid rgba(12,12,12,0.1); display:flex; flex-direction:column; padding:16px; gap:10px;">
+        <div style="display:flex; gap:6px;">
+          <div style="height:5px; width:50%; background:rgba(12,12,12,0.18); border-radius:3px; align-self:center;"></div>
+          <div style="margin-left:auto; height:22px; width:60px; background:#0033ff; border-radius:4px;"></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; flex:1;">
+          <div style="background:rgba(0,51,255,0.08); border-radius:5px;"></div>
+          <div style="background:rgba(12,12,12,0.05); border-radius:5px;"></div>
+          <div style="background:rgba(12,12,12,0.05); border-radius:5px;"></div>
+          <div style="background:rgba(12,12,12,0.05); border-radius:5px;"></div>
+          <div style="background:rgba(0,51,255,0.05); border-radius:5px;"></div>
+          <div style="background:rgba(12,12,12,0.05); border-radius:5px;"></div>
+        </div>
+      </div>
+      <div style="flex:1; max-width:180px; height:80%; background:#0c0c0c; border-radius:10px; border:1px solid rgba(255,255,255,0.1); display:flex; flex-direction:column; padding:14px; gap:8px;">
+        <div style="height:5px; width:70%; background:rgba(255,255,255,0.2); border-radius:3px;"></div>
+        <div style="height:24px; background:rgba(0,51,255,0.8); border-radius:4px;"></div>
+        <div style="height:24px; border:1px solid rgba(255,255,255,0.15); border-radius:4px;"></div>
+        <div style="flex:1; background:rgba(255,255,255,0.04); border-radius:4px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTCOMES -->
+  <section class="project-section" style="background: var(--white)">
+    <div class="project-section-inner">
+      <p class="project-section-label reveal">04 — Results</p>
+      <h2 class="project-section-title reveal">One system. Measurable speed.</h2>
+      <div class="outcomes-grid">
+        <div class="outcome-item reveal">
+          <div class="outcome-num"><span class="accent">60</span>%</div>
+          <p class="outcome-desc">Faster design-to-dev handoff</p>
+        </div>
+        <div class="outcome-item reveal" style="transition-delay:0.1s">
+          <div class="outcome-num"><span class="accent">82</span>+</div>
+          <p class="outcome-desc">Components shipped</p>
+        </div>
+        <div class="outcome-item reveal" style="transition-delay:0.2s">
+          <div class="outcome-num"><span class="accent">3</span></div>
+          <p class="outcome-desc">Product teams adopted</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT -->
+  <section id="next-project">
+    <div class="next-inner">
+      <div class="reveal">
+        <p class="next-label">Next Project</p>
+        <h2 class="next-title">Nómada —<br>Brand Identity</h2>
+      </div>
+      <a href="project-3.html" class="next-arrow-btn reveal">View Project →</a>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <span class="footer-name">RUBÉN OLIVIER</span>
+    <span class="footer-copy">© 2026</span>
+    <nav class="footer-links">
+      <a href="#" class="footer-link">Dribbble</a>
+      <a href="#" class="footer-link">LinkedIn</a>
+      <a href="#" class="footer-link">Read.cv</a>
+    </nav>
+  </footer>
+
+  <script>
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').style.boxShadow = window.scrollY > 40 ? '0 2px 24px rgba(12,12,12,0.06)' : 'none';
+    }, { passive: true });
+  </script>
+</body>
+</html>

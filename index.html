@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio — UI/UX Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    /* ── Figma / static capture overrides ── */
+    #loader { display: none !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+
+    /* ── Design tokens ── */
+    :root {
+      --bg: #f5f3ef;
+      --white: #ffffff;
+      --text: #0c0c0c;
+      --muted: #888880;
+      --accent: #0033ff;
+      --dark: #0c0c0c;
+      --border: rgba(12,12,12,0.10);
+      --font-display: 'Non Natural Grotesk Plain', 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --font-body: 'PP Neue Montreal', 'Inter', system-ui, sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; }
+
+    /* ── Utility ── */
+    .mono { font-family: var(--font-mono); }
+    .rule { border: none; border-top: 1px solid var(--border); }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 5vw, 80px); }
+
+    /* ── Reveal animation (JS overrides opacity/transform) ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       NAVBAR
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px clamp(24px, 5vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.35s var(--ease-out), border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+      border-bottom: 1px solid transparent;
+    }
+    #navbar.scrolled {
+      background: var(--white);
+      border-color: var(--border);
+      box-shadow: 0 2px 24px rgba(12,12,12,0.04);
+    }
+    .nav-name {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .lang-toggle {
+      display: flex;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+    .lang-toggle button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: inherit;
+      letter-spacing: inherit;
+      padding: 2px 4px;
+      transition: color 0.2s;
+    }
+    .lang-toggle button.active { color: var(--text); font-weight: 500; }
+    .lang-sep { color: var(--border); }
+    .nav-contact {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-contact:hover { color: var(--text); }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       HAMBURGER BUTTON
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 0;
+      position: relative;
+      z-index: 300;
+    }
+    .menu-bar {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s, background 0.3s;
+      transform-origin: center;
+    }
+    /* White bars when menu is open */
+    body.menu-open .menu-bar { background: var(--bg); }
+    body.menu-open .menu-bar:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    body.menu-open .menu-bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    body.menu-open .menu-bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       FULLSCREEN MENU OVERLAY
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 250;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px clamp(24px, 6vw, 100px) 60px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s cubic-bezier(0.16,1,0.3,1);
+    }
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .menu-nav {
+      display: flex;
+      flex-direction: column;
+    }
+    .menu-link {
+      display: flex;
+      align-items: baseline;
+      gap: clamp(16px, 2vw, 28px);
+      text-decoration: none;
+      padding: clamp(14px, 2.2vw, 22px) 0;
+      border-bottom: 1px solid rgba(245,243,239,0.07);
+      transform: translateY(28px);
+      opacity: 0;
+      transition: transform 0.55s cubic-bezier(0.16,1,0.3,1),
+                  opacity 0.55s cubic-bezier(0.16,1,0.3,1),
+                  color 0.2s;
+    }
+    .menu-overlay.open .menu-link { transform: translateY(0); opacity: 1; }
+    .menu-overlay.open .menu-link:nth-child(1) { transition-delay: 0.04s; }
+    .menu-overlay.open .menu-link:nth-child(2) { transition-delay: 0.09s; }
+    .menu-overlay.open .menu-link:nth-child(3) { transition-delay: 0.14s; }
+    .menu-overlay.open .menu-link:nth-child(4) { transition-delay: 0.19s; }
+    .menu-overlay.open .menu-link:nth-child(5) { transition-delay: 0.24s; }
+    .menu-link-num {
+      font-family: var(--font-mono);
+      font-size: clamp(10px, 0.9vw, 12px);
+      color: rgba(245,243,239,0.28);
+      letter-spacing: 0.12em;
+      min-width: 38px;
+      flex-shrink: 0;
+    }
+    .menu-link-text {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(40px, 6.5vw, 88px);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--bg);
+      transition: color 0.2s;
+      text-transform: uppercase;
+    }
+    .menu-link:hover .menu-link-text { color: var(--accent); }
+    .menu-link:first-child { border-top: 1px solid rgba(245,243,239,0.07); }
+    .menu-footer {
+      margin-top: clamp(28px, 4vw, 48px);
+      display: flex;
+      gap: 20px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s 0.32s, transform 0.5s 0.32s cubic-bezier(0.16,1,0.3,1);
+    }
+    .menu-overlay.open .menu-footer { opacity: 1; transform: translateY(0); }
+    .menu-social-link {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: rgba(245,243,239,0.35);
+      transition: color 0.2s;
+    }
+    .menu-social-link:hover { color: var(--bg); }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       HERO
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #hero {
+      min-height: 100svh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 clamp(24px, 5vw, 80px) clamp(48px, 7vw, 96px);
+      padding-top: 120px;
+    }
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.8;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(52px, 9.5vw, 148px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      max-width: 100%;
+    }
+    .hero-title span { display: block; }
+    .hero-title .accent-word { color: var(--accent); }
+    .hero-bottom {
+      margin-top: clamp(32px, 4vw, 56px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      background: transparent;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .tag:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
+    .scroll-indicator {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .scroll-indicator::before {
+      content: '';
+      display: inline-block;
+      width: 1px;
+      height: 40px;
+      background: var(--muted);
+      animation: scrollLine 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleY(1); opacity: 1; }
+      50% { transform: scaleY(0.3); opacity: 0.3; }
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       MARQUEE
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .marquee-band {
+      background: var(--text);
+      padding: 14px 0;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .marquee-track {
+      display: flex;
+      white-space: nowrap;
+      animation: marqueeScroll 18s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    .marquee-item {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      color: var(--bg);
+      padding: 0 32px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .marquee-dot {
+      color: var(--accent);
+      margin: 0 -16px 0 0;
+    }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION SHARED
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .section {
+      padding: clamp(64px, 10vw, 140px) 0;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: clamp(40px, 6vw, 72px);
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(36px, 5vw, 64px);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ABOUT
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #about { background: var(--bg); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(40px, 6vw, 100px);
+    }
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+    .about-photo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .about-photo-mask {
+      width: 460px;
+      height: 460px;
+      border-radius: 50%;
+      overflow: hidden;
+      will-change: transform;
+      flex-shrink: 0;
+      background: transparent;
+    }
+    .about-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 50%;
+      background: transparent;
+    }
+    .about-bio {
+      font-size: clamp(18px, 1.8vw, 22px);
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      max-width: 480px;
+    }
+    .about-bio p + p { margin-top: 20px; }
+    .about-stats {
+      display: flex;
+      margin-top: 48px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .about-stats > div {
+      flex: 1;
+      min-width: 100px;
+      padding: 20px 24px 0 0;
+      border-right: 1px solid var(--border);
+      margin-right: 24px;
+    }
+    .about-stats > div:last-child {
+      border-right: none;
+      margin-right: 0;
+      padding-right: 0;
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(36px, 4vw, 56px);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--text);
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+    .about-skills { }
+    .fw-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .fw-chip {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 12px;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .fw-chip:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+    /* ── Stack dark section ── */
+    .section-dark {
+      background: var(--dark);
+    }
+    .section-dark .rule { border-color: rgba(245,243,239,0.1); }
+    .section-dark .stack-acc-item { border-color: rgba(245,243,239,0.1); }
+    .section-dark .stack-acc-item:last-child { border-color: rgba(245,243,239,0.1); }
+    .section-dark .stack-acc-name { color: var(--bg); }
+    .section-dark .stack-acc-count { color: rgba(245,243,239,0.4); }
+    .section-dark .stack-acc-arrow { color: rgba(245,243,239,0.4); }
+    .section-dark .stack-acc-header:hover .stack-acc-name { color: var(--accent); }
+    .section-dark .stack-chip {
+      color: rgba(245,243,239,0.7);
+      border-color: rgba(245,243,239,0.15);
+    }
+    .section-dark .stack-chip:hover {
+      background: var(--bg);
+      color: var(--text);
+      border-color: var(--bg);
+    }
+
+    /* ── Services description ── */
+    .srv-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      letter-spacing: 0.01em;
+      color: rgba(245,243,239,0.55);
+      padding: 16px 0 20px;
+    }
+
+    /* ── Stack two-col layout ── */
+    .stack-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 5vw, 80px);
+      margin-top: clamp(32px, 4vw, 56px);
+    }
+    /* Servicios primero, Herramientas segundo */
+    .stack-two-col > [data-col="servicios"]    { order: 1; }
+    .stack-two-col > [data-col="herramientas"] { order: 2; }
+
+    /* ── Mobile stack tabs ── */
+    .stack-tabs {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .stack-two-col { grid-template-columns: 1fr; }
+      .stack-two-col > div { display: none; }
+      .stack-two-col > div.tab-active { display: block; }
+      .stack-col-label { display: none; }
+      .stack-tabs {
+        display: flex;
+        gap: 0;
+        margin-top: clamp(28px, 4vw, 48px);
+        border-bottom: 1px solid rgba(245,243,239,0.1);
+      }
+      .stack-tab-btn {
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        padding: 10px 20px 12px;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+        color: rgba(245,243,239,0.35);
+        cursor: pointer;
+        transition: color 0.2s, border-color 0.2s;
+      }
+      .stack-tab-btn.active {
+        color: var(--bg);
+        border-bottom-color: var(--accent);
+      }
+      .stack-two-col { margin-top: 0; }
+    }
+    .stack-col-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(20px, 2.2vw, 28px);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      text-transform: none;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    /* ── Stack accordion ── */
+    .stack-accordion { width: 100%; }
+    .stack-acc-item { border-top: 1px solid var(--border); }
+    .stack-acc-item:last-child { border-bottom: 1px solid var(--border); }
+    .stack-acc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+      cursor: pointer;
+      user-select: none;
+      gap: 16px;
+    }
+    .stack-acc-header:hover .stack-acc-name { color: var(--accent); }
+    .stack-acc-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .stack-acc-name {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .stack-acc-count {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .stack-acc-arrow {
+      font-size: 12px;
+      color: var(--muted);
+      transition: transform 0.3s var(--ease-out);
+      flex-shrink: 0;
+    }
+    .stack-acc-item.open .stack-acc-arrow { transform: rotate(180deg); }
+    .stack-acc-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s var(--ease-out);
+    }
+    .stack-acc-item.open .stack-acc-body { grid-template-rows: 1fr; }
+    .stack-acc-body-inner { overflow: hidden; }
+    .stack-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 20px;
+    }
+    .stack-chip {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 12px;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .stack-chip:hover {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .skill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+    .skill-row:first-child { border-top: 1px solid var(--border); }
+    .skill-name {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+      min-width: 120px;
+    }
+    .skill-bar-wrap {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .skill-bar {
+      height: 100%;
+      background: var(--text);
+      border-radius: 2px;
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 1s var(--ease-out);
+    }
+    .skill-bar.animate { transform: scaleX(1); }
+    .skill-pct {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SELECTED WORK
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #work { background: var(--white); }
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(20px, 3vw, 40px);
+    }
+    @media (max-width: 900px) {
+      .work-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .work-grid { grid-template-columns: 1fr; }
+    }
+    .project-card {
+      cursor: pointer;
+      group: true;
+    }
+    .project-thumb {
+      aspect-ratio: 4 / 3;
+      background: var(--bg);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      transition: box-shadow 0.4s var(--ease-out);
+    }
+    .project-card:hover .project-thumb {
+      box-shadow: 0 20px 60px rgba(12,12,12,0.14);
+    }
+    .project-thumb-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.5s var(--ease-out);
+    }
+    .project-card:hover .project-thumb-inner {
+      transform: scale(1.04);
+    }
+    .project-thumb-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    /* placeholder thumbnails */
+    .thumb-1 {
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 60%, #0033ff 100%);
+    }
+    .thumb-2 {
+      background: linear-gradient(135deg, #f5f3ef 0%, #e8e4dc 50%, #c8c0b0 100%);
+    }
+    .thumb-3 {
+      background: linear-gradient(135deg, #0033ff 0%, #0044cc 40%, #002299 100%);
+    }
+    .thumb-inner-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      width: 100%;
+      height: 100%;
+      padding: 24px;
+    }
+    .thumb-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+    .thumb-tag.light { color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.2); }
+    .thumb-tag.dark  { color: rgba(12,12,12,0.4);    border: 1px solid rgba(12,12,12,0.15); }
+    .thumb-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+    }
+    .thumb-headline.light { color: rgba(255,255,255,0.9); font-size: clamp(22px,2.5vw,32px); }
+    .thumb-headline.dark  { color: rgba(12,12,12,0.7);    font-size: clamp(22px,2.5vw,32px); }
+    .project-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 6px;
+      max-width: 280px;
+    }
+    .project-info {
+      margin-top: 20px;
+    }
+    .project-name {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2.2vw, 28px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      position: relative;
+      display: inline-block;
+    }
+    .project-name::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.4s var(--ease-out);
+    }
+    .project-card:hover .project-name::after { width: 100%; }
+    .project-meta {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       PROCESS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #process { background: var(--bg); }
+    .process-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    @media (max-width: 700px) {
+      .process-row { grid-template-columns: 1fr; }
+      .process-step { border-right: none !important; border-bottom: 1px solid var(--border); }
+      .process-step:last-child { border-bottom: none; }
+    }
+    .process-step {
+      padding: clamp(28px, 4vw, 52px) clamp(24px, 3vw, 44px);
+      border-right: 1px solid var(--border);
+    }
+    .process-step:last-child { border-right: none; }
+    .process-num {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .process-step-title {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 2.5vw, 32px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .process-desc {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       DARK SECTION — CONTACT CTA
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #contact {
+      background: var(--dark);
+      color: var(--bg);
+      padding: clamp(80px, 14vw, 180px) clamp(24px, 5vw, 80px);
+      text-align: center;
+    }
+    .contact-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .contact-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(40px, 7vw, 112px);
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      color: var(--bg);
+      max-width: 14ch;
+      margin: 0 auto 52px;
+      text-transform: uppercase;
+    }
+    .btn-magnetic-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-magnetic {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      padding: 18px 36px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.3s var(--ease-out);
+      will-change: transform;
+    }
+    .btn-magnetic:hover {
+      box-shadow: 0 16px 48px rgba(0,51,255,0.4);
+    }
+    .btn-arrow { font-size: 18px; transition: transform 0.3s var(--ease-out); }
+    .btn-magnetic:hover .btn-arrow { transform: translateX(4px); }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CONTACT MODAL
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(12,12,12,0.6);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s var(--ease-out);
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal {
+      background: var(--bg);
+      border-radius: 4px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90svh;
+      overflow-y: auto;
+      padding: clamp(32px, 5vw, 52px);
+      transform: translateY(24px);
+      transition: transform 0.4s var(--ease-out);
+      position: relative;
+    }
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 16px;
+    }
+    .modal-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(28px, 3.5vw, 40px);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+    }
+    .modal-subtitle {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .modal-close {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: 18px;
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .modal-close:hover { border-color: var(--text); color: var(--text); }
+
+    /* Form fields */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 14px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: var(--muted); }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus { border-color: var(--text); }
+    .form-input.error,
+    .form-select.error,
+    .form-textarea.error { border-color: #ff3333; }
+    .form-textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888880' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+    .form-error {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #ff3333;
+      letter-spacing: 0.06em;
+      display: none;
+    }
+    .form-group.has-error .form-error { display: block; }
+
+    /* ── Mini calendar ── */
+    .cal-wrap {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cal-month {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .cal-nav {
+      background: none;
+      border: none;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background 0.15s, color 0.15s;
+      padding: 0;
+    }
+    .cal-nav:hover:not(:disabled) { background: var(--border); color: var(--text); }
+    .cal-nav:disabled { opacity: 0.25; cursor: default; }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 8px 10px 10px;
+      gap: 1px;
+    }
+    .cal-dow {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-align: center;
+      padding-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--text);
+      transition: background 0.12s, color 0.12s;
+      border: none;
+      background: none;
+      line-height: 1;
+    }
+    .cal-day:hover:not(:disabled) { background: rgba(12,12,12,0.06); }
+    .cal-day.selected { background: var(--accent) !important; color: #fff; border-radius: 4px; }
+    .cal-day:disabled { color: rgba(12,12,12,0.18); cursor: default; }
+    .cal-day.today { color: var(--accent); font-weight: 500; }
+    .cal-day.today.selected { color: #fff; }
+
+    /* Time slots */
+    .cal-slots {
+      border-top: 1px solid var(--border);
+      padding: 10px 12px 12px;
+      display: none;
+    }
+    .cal-slots.show { display: block; }
+    .cal-slots-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .cal-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+    .cal-slot {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 4px;
+      cursor: pointer;
+      background: none;
+      text-align: center;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .cal-slot:hover { border-color: var(--text); background: rgba(12,12,12,0.04); }
+    .cal-slot.selected { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+    .cal-selected-display {
+      padding: 0 12px 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      display: none;
+    }
+    .cal-selected-display.show { display: block; }
+
+    .form-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+    .form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .form-note {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+    }
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      padding: 14px 28px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: box-shadow 0.3s var(--ease-out), opacity 0.2s;
+      white-space: nowrap;
+    }
+    .btn-submit:hover { box-shadow: 0 12px 40px rgba(0,51,255,0.35); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Success state */
+    .modal-success {
+      display: none;
+      text-align: center;
+      padding: 24px 0;
+    }
+    .modal-success.show { display: block; }
+    .modal-form.hide { display: none; }
+    .success-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+    .success-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .success-msg {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      line-height: 1.7;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       FOOTER
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 32px clamp(24px, 5vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-name {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+    }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-link {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--text); }
+    .footer-icon-link {
+      color: var(--muted);
+      font-size: 19px;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+    .footer-icon-link:hover { color: var(--text); }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       MOBILE — global responsive fixes
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    @media (max-width: 768px) {
+
+      /* Navbar */
+      #navbar { padding: 16px 24px; }
+      .nav-right { gap: 16px; }
+      .nav-contact { display: none; } /* está en el menú hamburguesa */
+
+      /* Hero */
+      #hero {
+        padding: 0 24px clamp(40px, 8vw, 64px);
+        padding-top: 88px;
+      }
+      .hero-label { font-size: 12px; letter-spacing: 0.07em; margin-bottom: 20px; }
+      .hero-title { font-size: clamp(44px, 12vw, 72px); }
+      .scroll-indicator { display: none; }
+      .hero-bottom { margin-top: 28px; }
+
+      /* About / Bio */
+      .about-grid { gap: 40px; }
+      .about-photo-wrap { order: -1; }
+      .about-photo-mask {
+        width: min(72vw, 300px);
+        height: min(72vw, 300px);
+      }
+      .about-bio { font-size: 16px; max-width: 100%; }
+      .about-stats { margin-top: 32px; }
+      .about-stats > div { min-width: 80px; padding: 16px 16px 0 0; margin-right: 16px; }
+      .stat-num { font-size: clamp(28px, 8vw, 40px); }
+
+      /* Section titles */
+      .section { padding: clamp(48px, 10vw, 80px) 0; }
+      .section-title { font-size: clamp(30px, 8vw, 44px); }
+      .section-header { margin-bottom: 32px; }
+
+      /* Work grid — 1 col en pantallas muy chicas */
+      .work-grid { grid-template-columns: 1fr; gap: 32px; }
+      .project-name { font-size: 20px; }
+
+      /* Process */
+      .process-step { padding: 28px 20px; }
+      .process-step-title { font-size: 22px; }
+
+      /* Contact */
+      #contact { padding: 72px 24px; }
+      .contact-headline { font-size: clamp(36px, 10vw, 56px); }
+
+      /* Footer */
+      #footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 24px;
+      }
+      .footer-copy {
+        font-size: 9px;
+        letter-spacing: 0.05em;
+        line-height: 1.5;
+      }
+      .footer-links { gap: 16px; }
+
+      /* Fullscreen menu links smaller on very short screens */
+      .menu-link-text { font-size: clamp(32px, 9vw, 56px); }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 400px) {
+      .hero-title { font-size: 40px; }
+      .about-photo-mask { width: 64vw; height: 64vw; }
+      .footer-copy { font-size: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+  <nav id="navbar">
+    <span class="nav-name mono" data-en="RUBÉN OLIVIER" data-es="RUBÉN OLIVIER">RUBÉN OLIVIER</span>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+        <span class="lang-sep">/</span>
+        <button id="btn-es" onclick="setLang('es')">ES</button>
+      </div>
+      <a href="#contact" class="nav-contact" data-en="Contact" data-es="Contacto">Contact</a>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu" aria-expanded="false">
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── FULLSCREEN MENU ── -->
+  <div class="menu-overlay" id="menu-overlay" role="dialog" aria-modal="true">
+    <nav class="menu-nav">
+      <a href="#about" class="menu-link" data-menu-link>
+        <span class="menu-link-num">01</span>
+        <span class="menu-link-text" data-en="BIO" data-es="BIO">BIO</span>
+      </a>
+      <a href="#stack" class="menu-link" data-menu-link>
+        <span class="menu-link-num">02</span>
+        <span class="menu-link-text">STACK</span>
+      </a>
+      <a href="#work" class="menu-link" data-menu-link>
+        <span class="menu-link-num">03</span>
+        <span class="menu-link-text" data-en="WORK" data-es="TRABAJO">WORK</span>
+      </a>
+      <a href="#process" class="menu-link" data-menu-link>
+        <span class="menu-link-num">04</span>
+        <span class="menu-link-text" data-en="METHOD" data-es="MÉTODO">METHOD</span>
+      </a>
+      <a href="#contact" class="menu-link" data-menu-link>
+        <span class="menu-link-num">→</span>
+        <span class="menu-link-text" data-en="CONTACT" data-es="CONTACTO">CONTACT</span>
+      </a>
+    </nav>
+    <div class="menu-footer">
+      <a href="https://dribbble.com/ux_rolivier" target="_blank" class="menu-social-link">Dribbble</a>
+      <a href="https://www.instagram.com/ux_rolivier/" target="_blank" class="menu-social-link">Instagram</a>
+      <a href="https://www.behance.net/ruben-olivier" target="_blank" class="menu-social-link">Behance</a>
+      <a href="https://www.linkedin.com/in/ruben-olivier/" target="_blank" class="menu-social-link">LinkedIn</a>
+      <a href="https://x.com/uxrolivier" target="_blank" class="menu-social-link">X</a>
+    </div>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <p class="hero-label mono reveal" data-en="AI-DRIVEN DESIGNER · BASED IN MEXICO" data-es="AI-DRIVEN DESIGNER · CON BASE EN MÉXICO">AI-DRIVEN DESIGNER · BASED IN MEXICO</p>
+    <h1 class="hero-title reveal">
+      <span data-en="DESIGN" data-es="DISEÑO">DESIGN</span>
+      <span><span class="accent-word" data-en="THAT THINKS" data-es="QUE PIENSA">THAT THINKS</span></span>
+      <span data-en="WITH YOU" data-es="CONTIGO">WITH YOU</span>
+    </h1>
+    <div class="hero-bottom reveal">
+      <div class="hero-tags">
+        <span class="tag" data-en="AI Product" data-es="AI Product">AI Product</span>
+        <span class="tag" data-en="User Research" data-es="User Research">User Research</span>
+        <span class="tag" data-en="Generative AI" data-es="Generative AI">Generative AI</span>
+        <span class="tag" data-en="Branding" data-es="Branding">Branding</span>
+      </div>
+      <div class="scroll-indicator mono" data-en="Scroll" data-es="Desliza">Scroll</div>
+    </div>
+  </section>
+
+  <!-- ── MARQUEE ── -->
+  <div class="marquee-band">
+    <div class="marquee-track" id="marquee-track">
+      <span class="marquee-item">AI Product</span>
+      <span class="marquee-item marquee-dot">·</span>
+      <span class="marquee-item">User Research</span>
+      <span class="marquee-item marquee-dot">·</span>
+      <span class="marquee-item">Generative AI</span>
+      <span class="marquee-item marquee-dot">·</span>
+      <span class="marquee-item">Branding</span>
+      <span class="marquee-item marquee-dot">·</span>
+      <span class="marquee-item">Interaction Design</span>
+      <span class="marquee-item marquee-dot">·</span>
+      <span class="marquee-item">Design Systems</span>
+      <span class="marquee-item marquee-dot">·</span>
+      <span class="marquee-item">Prototyping</span>
+      <span class="marquee-item marquee-dot">·</span>
+      <span class="marquee-item">Visual Design</span>
+      <span class="marquee-item marquee-dot">·</span>
+    </div>
+  </div>
+
+  <!-- ── ABOUT ── -->
+  <section id="about" class="section">
+    <div class="container">
+      <hr class="rule" />
+      <div class="section-header" style="margin-top: clamp(32px,4vw,56px)">
+        <span class="section-num mono">01 —</span>
+        <h2 class="section-title" data-en="BIO" data-es="BIO">BIO</h2>
+      </div>
+      <div class="about-grid">
+        <div class="reveal">
+          <p class="about-bio" data-en="¡Hola! I'm an AI Creative Designer with 6+ years of experience in visual design, branding, and UX/UI design." data-es="¡Hola! Soy AI Creative Designer con más de 6 años de experiencia en diseño visual, branding y diseño UX UI.">¡Hola! I'm an AI Creative Designer with 6+ years of experience in visual design, branding, and UX/UI design.</p>
+          <p class="about-bio" style="margin-top:20px" data-en="Experience in conceptualizing, designing, and executing brand assets using tools like Figma and Adobe Creative Suite." data-es="Experiencia en conceptualización, diseño y ejecución de artes para marcas, utilizando herramientas como Figma y Adobe Creative Suite.">Experience in conceptualizing, designing, and executing brand assets using tools like Figma and Adobe Creative Suite.</p>
+          <p class="about-bio" style="margin-top:20px" data-en="Focused on integrating artificial intelligence into creative products through hybrid workflows (AI + human design) aimed at optimizing production, exploring new aesthetics, and generating current solutions centered on people." data-es="Enfoque en integración de inteligencia artificial aplicada a productos creativos, mediante flujos de trabajo híbridos (IA + diseño humano) orientados a optimizar producción, explorar nuevas estéticas y generar soluciones actuales centradas en personas.">Focused on integrating artificial intelligence into creative products through hybrid workflows (AI + human design) aimed at optimizing production, exploring new aesthetics, and generating current solutions centered on people.</p>
+          <p class="about-bio" style="margin-top:40px; font-weight:700; letter-spacing:0.02em;" data-en="Frameworks UX" data-es="Frameworks UX">Frameworks UX</p>
+          <div class="fw-chips" style="margin-top:14px">
+            <span class="fw-chip">Design Thinking</span>
+            <span class="fw-chip">Double Diamond</span>
+            <span class="fw-chip">Lean UX</span>
+            <span class="fw-chip">JTBD</span>
+            <span class="fw-chip">Atomic Design</span>
+            <span class="fw-chip">Heurísticas</span>
+          </div>
+          <div class="about-stats">
+            <div>
+              <div class="stat-num">50+</div>
+              <div class="stat-label mono" data-en="Projects" data-es="Proyectos">Projects</div>
+            </div>
+            <div>
+              <div class="stat-num">6+</div>
+              <div class="stat-label mono" data-en="Years of Experience" data-es="Años de Experiencia">Years of Experience</div>
+            </div>
+            <div>
+              <div class="stat-num">20+</div>
+              <div class="stat-label mono" data-en="Brands" data-es="Marcas">Brands</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-photo-wrap reveal" style="transition-delay:0.12s">
+          <div class="about-photo-mask" id="about-photo-mask">
+            <img class="about-photo" src="RubenOlivier Profile.png" alt="Rubén Olivier" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STACK ── -->
+  <section id="stack" class="section section-dark">
+    <div class="container">
+      <div class="section-header" style="margin-top: clamp(32px,4vw,56px)">
+        <span class="section-num mono" style="color:rgba(245,243,239,0.35)">02 —</span>
+        <h2 class="section-title" style="color:var(--bg)">STACK</h2>
+      </div>
+      <!-- Tabs (mobile only) -->
+      <div class="stack-tabs">
+        <button class="stack-tab-btn active" data-tab="servicios">Servicios</button>
+        <button class="stack-tab-btn" data-tab="herramientas">Herramientas</button>
+      </div>
+
+      <div class="stack-two-col">
+
+        <!-- Columna Stack -->
+        <div data-col="herramientas">
+          <p class="stack-col-label mono" style="color:rgba(245,243,239,0.4)">Herramientas</p>
+          <div class="stack-accordion reveal" id="stack-accordion">
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">Generative AI</span>
+                  <span class="stack-acc-count">4</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <div class="stack-chips">
+                    <span class="stack-chip">Claude Code</span>
+                    <span class="stack-chip">Google AI Studio</span>
+                    <span class="stack-chip">Replicate</span>
+                    <span class="stack-chip">fal.ai</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">Design & Visual</span>
+                  <span class="stack-acc-count">4</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <div class="stack-chips">
+                    <span class="stack-chip">Figma</span>
+                    <span class="stack-chip">FigJam</span>
+                    <span class="stack-chip">Adobe Creative Suite</span>
+                    <span class="stack-chip">Freepik Spaces</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">Motion, Video & Voice</span>
+                  <span class="stack-acc-count">3</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <div class="stack-chips">
+                    <span class="stack-chip">Adobe After Effects</span>
+                    <span class="stack-chip">HeyGen</span>
+                    <span class="stack-chip">ElevenLabs</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">Build & Ship</span>
+                  <span class="stack-acc-count">4</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <div class="stack-chips">
+                    <span class="stack-chip">Lovable</span>
+                    <span class="stack-chip">Stitch</span>
+                    <span class="stack-chip">Vercel</span>
+                    <span class="stack-chip">GitHub</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">Workflow</span>
+                  <span class="stack-acc-count">2</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <div class="stack-chips">
+                    <span class="stack-chip">Notion</span>
+                    <span class="stack-chip">FigJam</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Columna Servicios -->
+        <div class="tab-active" data-col="servicios">
+          <p class="stack-col-label mono" style="color:rgba(245,243,239,0.4)">Servicios</p>
+          <div class="stack-accordion reveal" id="srv-accordion" style="transition-delay:0.1s">
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">AI Product Design</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <p class="srv-desc">Exploró el diseño de productos digitales con inteligencia artificial, definiendo ideas, flujos y primeras versiones funcionales.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">User Research (UX)</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <p class="srv-desc">Realizó entrevistas y pruebas de usabilidad a pequeña escala para entender a los usuarios. Busco obtener aprendizajes claros que ayuden a mejorar decisiones de diseño.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">UI Design</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <p class="srv-desc">Diseño interfaces y prototipos enfocados en claridad y uso real. Trabajo con estructuras organizadas y documentación para facilitar su implementación.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">Generative AI</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <p class="srv-desc">Desarrolló creativo con IA (imagen, video, voz), integrando múltiples modelos en workflows eficientes. Diseño prompts y pipelines para producción de contenido y producto.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack-acc-item">
+              <div class="stack-acc-header">
+                <div class="stack-acc-left">
+                  <span class="stack-acc-name">Vibecode & Digital Experiences</span>
+                </div>
+                <span class="stack-acc-arrow">↓</span>
+              </div>
+              <div class="stack-acc-body">
+                <div class="stack-acc-body-inner">
+                  <p class="srv-desc">Construyo proyectos digitales desde cero de forma rápida, probando ideas, lógica y ejecución ágil. Me enfoco en iterar, validar y mejorar con base en la práctica.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SELECTED WORK ── -->
+  <section id="work" class="section">
+    <div class="container">
+      <hr class="rule" />
+      <div class="section-header" style="margin-top: clamp(32px,4vw,56px)">
+        <span class="section-num mono">03 —</span>
+        <h2 class="section-title" data-en="SELECTED WORK" data-es="TRABAJO SELECCIONAO">SELECTED WORK</h2>
+      </div>
+      <div class="work-grid">
+        <!-- Card 1 -->
+        <article class="project-card reveal" onclick="location.href='project.html'" style="cursor:pointer">
+          <div class="project-thumb thumb-1">
+            <div class="project-thumb-inner">
+              <div class="thumb-inner-content">
+                <span class="thumb-tag light" data-en="AI · Fintech · Product" data-es="IA · Fintech · Producto">AI · Fintech · Product</span>
+                <p class="thumb-headline light" data-en="Clari" data-es="Clari">Clari</p>
+              </div>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3 class="project-name" data-en="Clari — AI Finance App" data-es="Clari — App Financiera con IA">Clari — AI Finance App</h3>
+            <p class="project-desc" data-en="End-to-end product design for an AI-powered personal finance app. Onboarding, dashboard, and insights flows built from zero." data-es="Diseño de producto completo para una app de finanzas personales con IA. Flujos de onboarding, dashboard e insights desde cero.">End-to-end product design for an AI-powered personal finance app. Onboarding, dashboard, and insights flows built from zero.</p>
+            <p class="project-meta mono" data-en="Product Design · 2024" data-es="Diseño de Producto · 2024">Product Design · 2024</p>
+          </div>
+        </article>
+        <!-- Card 2 -->
+        <article class="project-card reveal" onclick="location.href='project-2.html'" style="cursor:pointer; transition-delay: 0.1s">
+          <div class="project-thumb thumb-2">
+            <div class="project-thumb-inner">
+              <div class="thumb-inner-content">
+                <span class="thumb-tag dark" data-en="Design System · SaaS · B2B" data-es="Sistema de Diseño · SaaS · B2B">Design System · SaaS · B2B</span>
+                <p class="thumb-headline dark" data-en="Axis DS" data-es="Axis DS">Axis DS</p>
+              </div>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3 class="project-name" data-en="Axis — Design System" data-es="Axis — Sistema de Diseño">Axis — Design System</h3>
+            <p class="project-desc" data-en="Scalable design system for a B2B SaaS platform. 80+ components, design tokens, and Figma-to-code documentation for a cross-functional team of 12." data-es="Sistema de diseño escalable para plataforma B2B SaaS. +80 componentes, tokens de diseño y documentación Figma-to-code para un equipo multidisciplinario de 12 personas.">Scalable design system for a B2B SaaS platform. 80+ components, design tokens, and Figma-to-code documentation for a cross-functional team of 12.</p>
+            <p class="project-meta mono" data-en="Design Systems · 2024" data-es="Sistemas de Diseño · 2024">Design Systems · 2024</p>
+          </div>
+        </article>
+        <!-- Card 3 -->
+        <article class="project-card reveal" onclick="location.href='project-3.html'" style="cursor:pointer; transition-delay: 0.2s">
+          <div class="project-thumb thumb-3">
+            <div class="project-thumb-inner">
+              <div class="thumb-inner-content">
+                <span class="thumb-tag light" data-en="Brand · AI · Campaign" data-es="Marca · IA · Campaña">Brand · AI · Campaign</span>
+                <p class="thumb-headline light" data-en="Nómada" data-es="Nómada">Nómada</p>
+              </div>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3 class="project-name" data-en="Nómada — Brand Identity" data-es="Nómada — Identidad de Marca">Nómada — Brand Identity</h3>
+            <p class="project-desc" data-en="Full brand identity and AI-generated campaign for a travel lifestyle brand targeting Gen Z. Visual system, motion guidelines, and social kit." data-es="Identidad de marca completa y campaña generada con IA para una marca de viajes dirigida a Gen Z. Sistema visual, guía de movimiento y kit de redes sociales.">Full brand identity and AI-generated campaign for a travel lifestyle brand targeting Gen Z. Visual system, motion guidelines, and social kit.</p>
+            <p class="project-meta mono" data-en="Brand Design · 2023" data-es="Diseño de Marca · 2023">Brand Design · 2023</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROCESS ── -->
+  <section id="process" class="section">
+    <div class="container">
+      <hr class="rule" />
+      <div class="section-header" style="margin-top: clamp(32px,4vw,56px)">
+        <span class="section-num mono">04 —</span>
+        <h2 class="section-title" data-en="METHOD" data-es="MÉTODO">METHOD</h2>
+      </div>
+      <div class="process-row">
+        <div class="process-step reveal">
+          <p class="process-num mono">01</p>
+          <h3 class="process-step-title" data-en="Discover" data-es="Descubrir">Discover</h3>
+          <p class="process-desc" data-en="I research users and context through interviews, analysis, and references. I use AI to identify patterns and opportunities aligned with business goals." data-es="Investigo usuarios y contexto mediante entrevistas, análisis y referencias. Uso IA para identificar patrones y oportunidades alineadas con los objetivos del negocio.">I research users and context through interviews, analysis, and references. I use AI to identify patterns and opportunities aligned with business goals.</p>
+        </div>
+        <div class="process-step reveal" style="transition-delay: 0.12s">
+          <p class="process-num mono">02</p>
+          <h3 class="process-step-title" data-en="Define & Design" data-es="Definir y Diseñar">Define & Design</h3>
+          <p class="process-desc" data-en="I translate findings into flows, structure, and first product interfaces (MVP). I integrate branding criteria to give visual and functional coherence from the start." data-es="Traduzco hallazgos en flujos, estructura y primeras interfaces del producto (MVP). Integro criterios de branding para dar coherencia visual y funcional desde el inicio.">I translate findings into flows, structure, and first product interfaces (MVP). I integrate branding criteria to give visual and functional coherence from the start.</p>
+        </div>
+        <div class="process-step reveal" style="transition-delay: 0.24s">
+          <p class="process-num mono">03</p>
+          <h3 class="process-step-title" data-en="Prototype & Validate" data-es="Prototipar y Validar">Prototype & Validate</h3>
+          <p class="process-desc" data-en="I develop functional prototypes with AI, test in real scenarios, collect feedback, and continuously adjust to improve the experience and its business impact." data-es="Desarrollo prototipos funcionales con IA, pruebo en escenarios reales, recolecto feedback y ajusto continuamente para mejorar la experiencia y su impacto en el negocio.">I develop functional prototypes with AI, test in real scenarios, collect feedback, and continuously adjust to improve the experience and its business impact.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DARK: CONTACT CTA ── -->
+  <section id="contact">
+    <p class="contact-label mono reveal" data-en="Let's collaborate" data-es="Colaboremos">Let's collaborate</p>
+    <h2 class="contact-headline reveal" data-en="Let's Work Together" data-es="Trabajemos Juntos">Let's Work Together</h2>
+    <div class="btn-magnetic-wrap reveal">
+      <button class="btn-magnetic" id="btn-say-hello">
+        <span data-en="Say Hello" data-es="Escríbeme">Say Hello</span>
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer id="footer">
+    <span class="footer-name mono" data-en="RUBÉN OLIVIER" data-es="RUBÉN OLIVIER">RUBÉN OLIVIER</span>
+    <span class="footer-copy mono">COPYRIGHT © 2026 | DISEÑO QUE PIENSA CONTIGO</span>
+    <nav class="footer-links">
+      <a href="https://dribbble.com/ux_rolivier" target="_blank" class="footer-icon-link" aria-label="Dribbble" title="Dribbble"><i class="ri-dribbble-line"></i></a>
+      <a href="https://www.instagram.com/ux_rolivier/" target="_blank" class="footer-icon-link" aria-label="Instagram" title="Instagram"><i class="ri-instagram-line"></i></a>
+      <a href="https://www.behance.net/ruben-olivier" target="_blank" class="footer-icon-link" aria-label="Behance" title="Behance"><i class="ri-behance-line"></i></a>
+      <a href="https://www.linkedin.com/in/ruben-olivier/" target="_blank" class="footer-icon-link" aria-label="LinkedIn" title="LinkedIn"><i class="ri-linkedin-box-line"></i></a>
+      <a href="https://x.com/uxrolivier" target="_blank" class="footer-icon-link" aria-label="X" title="X"><i class="ri-twitter-x-line"></i></a>
+    </nav>
+  </footer>
+
+  <!-- ── CONTACT MODAL ── -->
+  <div class="modal-overlay" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="modal-title" data-en="Let's meet" data-es="Hablemos">Let's meet</h2>
+          <p class="modal-subtitle" data-en="Schedule a call or meeting" data-es="Agenda una llamada o reunión">Schedule a call or meeting</p>
+        </div>
+        <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+      </div>
+
+      <form class="modal-form" id="contact-form" novalidate>
+        <div class="form-grid">
+
+          <div class="form-group" id="fg-name">
+            <label class="form-label" for="f-name" data-en="Full Name" data-es="Nombre completo">Full Name</label>
+            <input class="form-input" id="f-name" type="text" placeholder="Sofía Ramírez" autocomplete="name" />
+            <span class="form-error" data-en="Please enter your name" data-es="Ingresa tu nombre">Please enter your name</span>
+          </div>
+
+          <div class="form-group" id="fg-email">
+            <label class="form-label" for="f-email">Email</label>
+            <input class="form-input" id="f-email" type="email" placeholder="sofia@empresa.com" autocomplete="email" />
+            <span class="form-error" data-en="Enter a valid email" data-es="Ingresa un email válido">Enter a valid email</span>
+          </div>
+
+          <div class="form-group" id="fg-company">
+            <label class="form-label" for="f-company" data-en="Company / Brand" data-es="Empresa / Marca">Company / Brand</label>
+            <input class="form-input" id="f-company" type="text" placeholder="Acme Inc." autocomplete="organization" />
+            <span class="form-error" data-en="Please enter your company" data-es="Ingresa tu empresa">Please enter your company</span>
+          </div>
+
+          <div class="form-group" id="fg-type">
+            <label class="form-label" for="f-type" data-en="Project Type" data-es="Tipo de proyecto">Project Type</label>
+            <select class="form-select" id="f-type">
+              <option value="" disabled selected data-en="Select one…" data-es="Selecciona…">Select one…</option>
+              <option value="branding" data-en="Branding" data-es="Branding">Branding</option>
+              <option value="ui-ux" data-en="UI / UX Design" data-es="Diseño UI / UX">UI / UX Design</option>
+              <option value="ai-product" data-en="AI Product" data-es="Producto con IA">AI Product</option>
+              <option value="motion" data-en="Motion & Video" data-es="Motion & Video">Motion & Video</option>
+              <option value="content" data-en="Digital Content" data-es="Contenido Digital">Digital Content</option>
+              <option value="other" data-en="Other" data-es="Otro">Other</option>
+            </select>
+            <span class="form-error" data-en="Select a project type" data-es="Selecciona un tipo">Select a project type</span>
+          </div>
+
+          <div class="form-group full" id="fg-availability">
+            <label class="form-label" data-en="Pick a date & time" data-es="Elige fecha y hora">Pick a date & time</label>
+            <input type="hidden" id="f-availability" />
+            <div class="cal-wrap">
+              <div class="cal-header">
+                <button type="button" class="cal-nav" id="cal-prev">←</button>
+                <span class="cal-month" id="cal-month-label"></span>
+                <button type="button" class="cal-nav" id="cal-next">→</button>
+              </div>
+              <div class="cal-grid" id="cal-grid"></div>
+              <div class="cal-slots" id="cal-slots">
+                <p class="cal-slots-label" data-en="Available times" data-es="Horarios disponibles">Available times</p>
+                <div class="cal-slots-grid" id="cal-slots-grid"></div>
+              </div>
+              <p class="cal-selected-display" id="cal-selected-display"></p>
+            </div>
+            <span class="form-error" data-en="Select a date and time" data-es="Selecciona fecha y hora">Select a date and time</span>
+          </div>
+
+          <div class="form-group full" id="fg-message">
+            <label class="form-label" for="f-message" data-en="What do you need?" data-es="¿Qué necesitas?">What do you need?</label>
+            <textarea class="form-textarea" id="f-message" placeholder="Brief description of your project or idea…"></textarea>
+            <span class="form-error" data-en="Add a brief description" data-es="Agrega una descripción breve">Add a brief description</span>
+          </div>
+
+        </div>
+
+        <div class="form-divider"></div>
+
+        <div class="form-footer">
+          <p class="form-note" data-en="I'll get back to you to set up a time." data-es="Te escribo pronto para coordinar.">I'll get back to you to set up a time.</p>
+          <button type="submit" class="btn-submit">
+            <span data-en="Send Request" data-es="Enviar solicitud">Send Request</span>
+            <span>→</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="modal-success" id="modal-success">
+        <div class="success-icon">✓</div>
+        <h3 class="success-title" data-en="Message sent!" data-es="¡Mensaje enviado!">Message sent!</h3>
+        <p class="success-msg" data-en="Thanks — I'll be in touch within 24 h." data-es="Gracias — me pongo en contacto en menos de 24 h.">Thanks — I'll be in touch within 24 h.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── Stack mobile tabs ── */
+    document.querySelectorAll('.stack-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.stack-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.stack-two-col > [data-col]').forEach(col => {
+          col.classList.toggle('tab-active', col.dataset.col === tab);
+        });
+      });
+    });
+
+    /* ── Hamburger menu ── */
+    const menuToggle  = document.getElementById('menu-toggle');
+    const menuOverlay = document.getElementById('menu-overlay');
+
+    function openMenu() {
+      menuOverlay.classList.add('open');
+      document.body.classList.add('menu-open');
+      document.body.style.overflow = 'hidden';
+      menuToggle.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu() {
+      menuOverlay.classList.remove('open');
+      document.body.classList.remove('menu-open');
+      document.body.style.overflow = '';
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+    menuToggle.addEventListener('click', () => {
+      document.body.classList.contains('menu-open') ? closeMenu() : openMenu();
+    });
+    document.querySelectorAll('[data-menu-link]').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    /* ── Lang system ── */
+    function setLang(lang) {
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.textContent = el.dataset[lang] || el.dataset.en;
+      });
+      document.documentElement.lang = lang === 'es' ? 'es' : 'en';
+      localStorage.setItem('lang', lang);
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    }
+    const savedLang = localStorage.getItem('lang')
+      || (navigator.language.startsWith('es') ? 'es' : 'en');
+    setLang(savedLang);
+
+    /* ── Navbar scroll state ── */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── IntersectionObserver reveals ── */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          // animate skill bars when about section enters
+          entry.target.querySelectorAll('.skill-bar').forEach(bar => {
+            bar.style.transform = `scaleX(${bar.style.getPropertyValue('--w') || 1})`;
+          });
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ── Skill bar animation via IntersectionObserver ── */
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.skill-bar').forEach(bar => {
+            const w = parseFloat(bar.style.getPropertyValue('--w') || bar.parentElement.dataset.w || 1);
+            setTimeout(() => {
+              bar.style.transform = `scaleX(${w})`;
+              bar.classList.add('animate');
+            }, 200);
+          });
+          skillObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    const skillSection = document.querySelector('.about-skills');
+    if (skillSection) skillObserver.observe(skillSection);
+
+    /* ── Marquee duplicate for seamless loop ── */
+    const track = document.getElementById('marquee-track');
+    if (track) {
+      const clone = track.innerHTML;
+      track.innerHTML += clone;
+    }
+
+    /* ── Contact modal ── */
+    const modal    = document.getElementById('contact-modal');
+    const form     = document.getElementById('contact-form');
+    const success  = document.getElementById('modal-success');
+
+    function openModal() {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('f-name').focus();
+    }
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('btn-say-hello').addEventListener('click', openModal);
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    function validate() {
+      const rules = [
+        { id: 'fg-name',         field: 'f-name',         test: v => v.trim().length >= 2 },
+        { id: 'fg-email',        field: 'f-email',        test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+        { id: 'fg-company',      field: 'f-company',      test: v => v.trim().length >= 2 },
+        { id: 'fg-type',         field: 'f-type',         test: v => v !== '' },
+        { id: 'fg-availability', field: 'f-availability', test: v => v.trim().length >= 3 },
+        { id: 'fg-message',      field: 'f-message',      test: v => v.trim().length >= 10 },
+      ];
+      let valid = true;
+      rules.forEach(({ id, field, test }) => {
+        const el = document.getElementById(field);
+        const grp = document.getElementById(id);
+        const ok = test(el.value);
+        grp.classList.toggle('has-error', !ok);
+        el.classList.toggle('error', !ok);
+        if (!ok) valid = false;
+      });
+      return valid;
+    }
+
+    /* ── EmailJS config ─────────────────────────────────
+       1. Crea cuenta en https://www.emailjs.com
+       2. Add Service → Gmail → conecta hola@rubenolivier.com
+       3. Email Templates → crea plantilla con variables:
+            {{from_name}}, {{from_email}}, {{company}},
+            {{project_type}}, {{meeting_date}}, {{message}}
+          · To email: hola@rubenolivier.com
+       4. Reemplaza las 3 constantes de abajo con tus IDs reales
+    ──────────────────────────────────────────────────── */
+    const EMAILJS_PUBLIC_KEY  = 'hJxefFWg_NxYoiZOP';
+    const EMAILJS_SERVICE_ID  = 'service_o1nsl6w';
+    const EMAILJS_TEMPLATE_ID = 'template_xwesunj';
+
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!validate()) return;
+
+      const btn = form.querySelector('.btn-submit');
+      const btnText = btn.querySelector('span:first-child');
+      btn.disabled = true;
+      btnText.textContent = '...';
+
+      const name     = document.getElementById('f-name').value.trim();
+      const email    = document.getElementById('f-email').value.trim();
+      const company  = document.getElementById('f-company').value.trim();
+      const type     = document.getElementById('f-type').value;
+      const date     = document.getElementById('f-availability').value || '—';
+      const msg      = document.getElementById('f-message').value.trim();
+
+      const templateParams = {
+        from_name:  name,
+        from_email: email,
+        to_email:   'hola@rubenolivier.com',
+        reply_to:   email,
+        subject:    `Nueva solicitud de reunión — ${name}`,
+        message: `
+Hola Rubén, tienes una nueva solicitud de reunión desde tu portfolio.
+
+──────────────────────
+CONTACTO
+──────────────────────
+Nombre:   ${name}
+Email:    ${email}
+Empresa:  ${company}
+
+──────────────────────
+PROYECTO
+──────────────────────
+Tipo:     ${type}
+Mensaje:  ${msg}
+
+──────────────────────
+REUNIÓN
+──────────────────────
+Fecha y hora propuesta: ${date}
+
+──────────────────────
+Responde directamente a ${email}
+        `.trim(),
+      };
+
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+        form.classList.add('hide');
+        success.classList.add('show');
+        const lang = localStorage.getItem('lang') || 'en';
+        success.querySelectorAll('[data-en]').forEach(el => {
+          el.textContent = el.dataset[lang] || el.dataset.en;
+        });
+      } catch (err) {
+        btn.disabled = false;
+        btnText.textContent = localStorage.getItem('lang') === 'es' ? 'Enviar solicitud' : 'Send Request';
+        alert('Error al enviar. Intenta de nuevo o escríbeme directamente a hola@rubenolivier.com');
+        console.error('EmailJS error:', err);
+      }
+    });
+
+    /* Clear error on input */
+    form.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
+      el.addEventListener('input', () => {
+        el.classList.remove('error');
+        el.closest('.form-group')?.classList.remove('has-error');
+      });
+    });
+
+    /* ── Mini calendar ── */
+    const SLOTS = ['9:00', '10:00', '11:00', '12:00', '15:00', '16:00', '17:00'];
+    const DAYS_EN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const DAYS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+    const MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+    let calDate = new Date(); calDate.setDate(1);
+    let calSelected = null;
+    let calSlot = null;
+
+    function calLang() { return localStorage.getItem('lang') || 'en'; }
+
+    function renderCal() {
+      const lang = calLang();
+      const today = new Date(); today.setHours(0,0,0,0);
+      const year = calDate.getFullYear();
+      const month = calDate.getMonth();
+
+      document.getElementById('cal-month-label').textContent =
+        (lang === 'es' ? MONTHS_ES : MONTHS_EN)[month] + ' ' + year;
+
+      const prevBtn = document.getElementById('cal-prev');
+      const nowFirst = new Date(); nowFirst.setDate(1); nowFirst.setHours(0,0,0,0);
+      prevBtn.disabled = calDate <= nowFirst;
+
+      const grid = document.getElementById('cal-grid');
+      grid.innerHTML = '';
+
+      const dows = lang === 'es' ? DAYS_ES : DAYS_EN;
+      [1,2,3,4,5,6,0].forEach(i => {
+        const d = document.createElement('div');
+        d.className = 'cal-dow';
+        d.textContent = dows[i];
+        grid.appendChild(d);
+      });
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const offset = (firstDay + 6) % 7;
+      for (let i = 0; i < offset; i++) grid.appendChild(document.createElement('div'));
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      for (let d = 1; d <= daysInMonth; d++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cal-day';
+        btn.textContent = d;
+        const dayDate = new Date(year, month, d);
+        const isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6;
+        if (isWeekend || dayDate < today) {
+          btn.disabled = true;
+        } else {
+          if (calSelected &&
+              calSelected.getDate() === d &&
+              calSelected.getMonth() === month &&
+              calSelected.getFullYear() === year) btn.classList.add('selected');
+          if (dayDate.getTime() === today.getTime()) btn.classList.add('today');
+          btn.addEventListener('click', () => selectDay(new Date(year, month, d)));
+        }
+        grid.appendChild(btn);
+      }
+    }
+
+    function selectDay(date) {
+      calSelected = date; calSlot = null;
+      document.getElementById('f-availability').value = '';
+      updateCalDisplay(); renderCal(); renderSlots();
+      document.getElementById('cal-slots').classList.add('show');
+    }
+
+    function renderSlots() {
+      const g = document.getElementById('cal-slots-grid');
+      g.innerHTML = '';
+      SLOTS.forEach(s => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cal-slot' + (calSlot === s ? ' selected' : '');
+        btn.textContent = s;
+        btn.addEventListener('click', () => {
+          calSlot = s;
+          document.getElementById('f-availability').value = formatCalSelection();
+          updateCalDisplay(); renderSlots();
+          document.getElementById('fg-availability').classList.remove('has-error');
+        });
+        g.appendChild(btn);
+      });
+    }
+
+    function formatCalSelection() {
+      if (!calSelected || !calSlot) return '';
+      const lang = calLang();
+      const months = lang === 'es' ? MONTHS_ES : MONTHS_EN;
+      return calSelected.getDate() + ' ' + months[calSelected.getMonth()] + ', ' + calSlot;
+    }
+
+    function updateCalDisplay() {
+      const el = document.getElementById('cal-selected-display');
+      if (calSelected && calSlot) {
+        el.textContent = '✓ ' + formatCalSelection();
+        el.classList.add('show');
+      } else {
+        el.textContent = '';
+        el.classList.remove('show');
+      }
+    }
+
+    document.getElementById('cal-prev').addEventListener('click', () => {
+      calDate.setMonth(calDate.getMonth() - 1); renderCal();
+    });
+    document.getElementById('cal-next').addEventListener('click', () => {
+      calDate.setMonth(calDate.getMonth() + 1); renderCal();
+    });
+
+    renderCal();
+
+    /* ── Photo parallax ── */
+    const photoMask = document.getElementById('about-photo-mask');
+    if (photoMask) {
+      window.addEventListener('scroll', () => {
+        const isMobile = window.innerWidth < 768;
+        const rect = photoMask.getBoundingClientRect();
+        const center = rect.top + rect.height / 2 - window.innerHeight / 2;
+        let offset = center * -0.45;
+        if (isMobile) {
+          /* Clamp: no sube más allá de 40px (evita empalme con stats)
+             ni baja más allá de -60px (evita empalme con STACK) */
+          offset = Math.min(40, Math.max(-60, offset));
+        }
+        photoMask.style.transform = `translateY(${offset}px)`;
+      }, { passive: true });
+    }
+
+    /* ── Stack accordion ── */
+    ['#stack-accordion', '#fw-accordion', '#srv-accordion'].forEach(id => {
+      document.querySelectorAll(id + ' .stack-acc-header').forEach(header => {
+        header.addEventListener('click', () => {
+          header.parentElement.classList.toggle('open');
+        });
+      });
+    });
+
+    /* ── Magnetic button ── */
+    const magneticBtn = document.getElementById('btn-say-hello');
+    if (magneticBtn) {
+      const wrap = magneticBtn.closest('.btn-magnetic-wrap');
+      wrap.addEventListener('mousemove', (e) => {
+        const rect = magneticBtn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = (e.clientX - cx) / (rect.width / 2);
+        const dy = (e.clientY - cy) / (rect.height / 2);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const range = 2.2; // how far outside the button the magnet field extends
+        if (dist < range) {
+          const strength = 8;
+          magneticBtn.style.transform = `translate(${dx * strength}px, ${dy * strength}px)`;
+        }
+      });
+      wrap.addEventListener('mouseleave', () => {
+        magneticBtn.style.transform = 'translate(0,0)';
+      });
+    }
+  </script>
+</body>
+</html>

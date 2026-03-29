@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clari — AI Finance App · Rubén Olivier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:     #f5f3ef;
+      --white:  #ffffff;
+      --text:   #0c0c0c;
+      --muted:  #888880;
+      --accent: #0033ff;
+      --dark:   #0c0c0c;
+      --border: rgba(12,12,12,0.10);
+      --font-display: 'Non Natural Grotesk Plain', 'Syne', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+      --font-body:    'PP Neue Montreal', 'Inter', system-ui, sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 5vw, 80px); }
+    .rule { border: none; border-top: 1px solid var(--border); }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* Navbar */
+    #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px clamp(24px, 5vw, 80px); display: flex; align-items: center; justify-content: space-between; background: var(--bg); border-bottom: 1px solid var(--border); transition: background 0.35s var(--ease-out); }
+    .nav-name { font-family: var(--font-mono); font-size: 13px; font-weight: 500; letter-spacing: 0.02em; }
+    .nav-back { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--muted); display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .nav-back:hover { color: var(--text); }
+
+    /* Hero */
+    #project-hero { padding-top: 120px; padding-bottom: clamp(48px, 6vw, 80px); background: var(--bg); }
+    .project-hero-inner { padding: 0 clamp(24px, 5vw, 80px); max-width: 1280px; margin: 0 auto; }
+    .project-hero-meta { display: flex; align-items: center; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .project-category { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+    .project-year { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); }
+    .project-hero-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(48px, 7vw, 112px); letter-spacing: -0.03em; line-height: 0.94; color: var(--text); max-width: 14ch; margin-bottom: clamp(32px, 4vw, 56px); }
+    .project-hero-title .accent { color: var(--accent); }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .project-tag { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--text); border: 1px solid var(--border); border-radius: 100px; padding: 5px 14px; }
+
+    /* Cover */
+    .project-cover { width: 100%; aspect-ratio: 16 / 7; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    .cover-clari { background: linear-gradient(135deg, #080818 0%, #0c0c2a 50%, #001aff 100%); }
+    .cover-inner { display: flex; align-items: center; justify-content: center; gap: clamp(16px, 3vw, 40px); width: 100%; height: 100%; padding: clamp(24px, 4vw, 60px); }
+    .phone-mock { width: clamp(100px, 10vw, 160px); aspect-ratio: 9/19; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 28px; flex-shrink: 0; position: relative; overflow: hidden; }
+    .phone-mock::before { content: ''; display: block; width: 40%; height: 4px; background: rgba(255,255,255,0.15); border-radius: 4px; margin: 14px auto 0; }
+    .phone-mock-screen { width: 85%; height: 65%; background: rgba(0,51,255,0.18); border-radius: 12px; margin: 20px auto 0; }
+    .phone-mock-bar { width: 70%; height: 8px; background: rgba(255,255,255,0.12); border-radius: 4px; margin: 10px auto 0; }
+    .phone-mock-bar.short { width: 45%; }
+    .phone-mock.center { width: clamp(120px, 13vw, 200px); transform: translateY(-20px); }
+
+    /* Info bar */
+    .project-info-bar { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: clamp(24px, 3vw, 40px) clamp(24px, 5vw, 80px); }
+    .project-info-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+    @media (max-width: 768px) { .project-info-grid { grid-template-columns: repeat(2, 1fr); } }
+    .info-item-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+    .info-item-value { font-family: var(--font-mono); font-size: 14px; color: var(--text); line-height: 1.5; }
+
+    /* Content sections */
+    .project-section { padding: clamp(56px, 8vw, 112px) clamp(24px, 5vw, 80px); }
+    .project-section-inner { max-width: 1280px; margin: 0 auto; }
+    .project-section-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 20px; }
+    .project-section-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 3.5vw, 48px); letter-spacing: -0.02em; line-height: 1.05; margin-bottom: clamp(24px, 3vw, 40px); }
+    .project-body { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.75; color: var(--text); max-width: 680px; }
+    .project-body p + p { margin-top: 20px; }
+
+    /* Two-col */
+    .project-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 96px); align-items: start; }
+    @media (max-width: 768px) { .project-cols { grid-template-columns: 1fr; } }
+
+    /* Mockups */
+    .mockup { border-radius: 8px; overflow: hidden; background: #e8e4dc; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; }
+    .mockup.tall { aspect-ratio: 9 / 16; }
+    .mockup.wide { aspect-ratio: 16 / 9; }
+    .mockup.square { aspect-ratio: 1; }
+    .mockup-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+    .mock-dark  { background: #111120; }
+    .mock-blue  { background: linear-gradient(135deg, #0c1640 0%, #0033ff 100%); }
+    .mock-mid   { background: #1a1a2e; }
+    .mock-warm  { background: #e8e4dc; }
+    .mock-card  { background: #d8d4cc; }
+
+    /* Mockup grid */
+    .mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 2vw, 20px); }
+    @media (max-width: 600px) { .mockup-grid { grid-template-columns: 1fr; } }
+    .mockup-grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+    /* Phone trio */
+    .phone-trio { display: flex; gap: clamp(10px,2vw,20px); align-items: flex-end; padding: 24px; }
+    .phone-card { flex: 1; aspect-ratio: 9/16; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
+    .phone-card-screen { width: 80%; height: 55%; border-radius: 8px; margin: 16px auto 0; }
+    .phone-card-bar1 { width: 65%; height: 7px; border-radius: 4px; margin: 10px auto 0; background: rgba(255,255,255,0.14); }
+    .phone-card-bar2 { width: 45%; height: 7px; border-radius: 4px; margin: 6px auto 0; background: rgba(255,255,255,0.08); }
+    .phone-card.p1 { background: #0c0c20; transform: rotate(-3deg); }
+    .phone-card.p1 .phone-card-screen { background: rgba(0,51,255,0.25); }
+    .phone-card.p2 { background: #0c1640; transform: translateY(-16px); }
+    .phone-card.p2 .phone-card-screen { background: rgba(0,51,255,0.35); }
+    .phone-card.p3 { background: #111128; transform: rotate(3deg); }
+    .phone-card.p3 .phone-card-screen { background: rgba(0,100,255,0.2); }
+
+    /* Insight cards */
+    .insight-list { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+    .insight-item { display: flex; align-items: flex-start; gap: 16px; padding: 20px; background: var(--white); border: 1px solid var(--border); border-radius: 8px; }
+    .insight-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-top: 2px; flex-shrink: 0; }
+    .insight-text { font-size: 15px; line-height: 1.5; color: var(--text); }
+    .insight-text strong { font-weight: 600; }
+
+    /* Outcomes */
+    .outcomes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--border); margin-top: clamp(32px, 4vw, 56px); }
+    @media (max-width: 600px) { .outcomes-grid { grid-template-columns: 1fr; } }
+    .outcome-item { padding: clamp(24px, 3vw, 40px) 0; border-bottom: 1px solid var(--border); padding-right: 32px; }
+    .outcome-num { font-family: var(--font-mono); font-weight: 500; font-size: clamp(36px, 4vw, 56px); letter-spacing: -0.04em; color: var(--text); line-height: 1; margin-bottom: 8px; }
+    .outcome-num .accent { color: var(--accent); }
+    .outcome-desc { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+
+    /* Next project */
+    #next-project { background: var(--dark); padding: clamp(64px, 10vw, 120px) clamp(24px, 5vw, 80px); }
+    .next-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+    .next-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; margin-bottom: 16px; }
+    .next-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(32px, 4vw, 56px); letter-spacing: -0.03em; color: var(--bg); line-height: 1.0; }
+    .next-arrow-btn { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; color: var(--bg); border: 1px solid rgba(245,243,239,0.2); border-radius: 100px; padding: 16px 28px; transition: background 0.25s, border-color 0.25s; white-space: nowrap; }
+    .next-arrow-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+    /* Footer */
+    #footer { background: var(--bg); border-top: 1px solid var(--border); padding: 32px clamp(24px, 5vw, 80px); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-name { font-family: var(--font-mono); font-size: 13px; color: var(--text); }
+    .footer-copy { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-link { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; color: var(--muted); transition: color 0.2s; }
+    .footer-link:hover { color: var(--text); }
+    .section-divider { height: 1px; background: var(--border); max-width: 1280px; margin: 0 auto; }
+
+    /* Quote block */
+    .quote-block { border-left: 3px solid var(--accent); padding: 20px 28px; margin: 40px 0; background: var(--white); border-radius: 0 8px 8px 0; }
+    .quote-text { font-size: clamp(17px,1.6vw,22px); line-height: 1.6; font-style: italic; color: var(--text); }
+    .quote-attr { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-name">RUBÉN OLIVIER</a>
+    <a href="index.html#work" class="nav-back">← All Work</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="project-hero">
+    <div class="project-hero-inner">
+      <div class="project-hero-meta reveal">
+        <span class="project-category">Product Design</span>
+        <span style="color:var(--border)">—</span>
+        <span class="project-year">2024</span>
+      </div>
+      <h1 class="project-hero-title reveal">
+        Clari —<br><span class="accent">AI Finance</span><br>App
+      </h1>
+      <div class="project-tags reveal">
+        <span class="project-tag">UI Design</span>
+        <span class="project-tag">UX Research</span>
+        <span class="project-tag">AI Integration</span>
+        <span class="project-tag">Figma</span>
+        <span class="project-tag">Prototyping</span>
+        <span class="project-tag">Design System</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- COVER -->
+  <div class="project-cover cover-clari reveal">
+    <div class="cover-inner">
+      <div class="phone-mock">
+        <div class="phone-mock-screen"></div>
+        <div class="phone-mock-bar" style="margin-top:14px"></div>
+        <div class="phone-mock-bar short"></div>
+        <div class="phone-mock-bar" style="width:55%"></div>
+      </div>
+      <div class="phone-mock center">
+        <div class="phone-mock-screen" style="height:70%; background:rgba(0,51,255,0.3)"></div>
+        <div class="phone-mock-bar" style="margin-top:10px"></div>
+        <div class="phone-mock-bar short"></div>
+      </div>
+      <div class="phone-mock">
+        <div class="phone-mock-screen"></div>
+        <div class="phone-mock-bar" style="margin-top:14px"></div>
+        <div class="phone-mock-bar short"></div>
+        <div class="phone-mock-bar" style="width:60%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO BAR -->
+  <div class="project-info-bar">
+    <div class="project-info-grid">
+      <div>
+        <p class="info-item-label">Client</p>
+        <p class="info-item-value">Clari · CDMX</p>
+      </div>
+      <div>
+        <p class="info-item-label">Role</p>
+        <p class="info-item-value">Lead Product Designer</p>
+      </div>
+      <div>
+        <p class="info-item-label">Duration</p>
+        <p class="info-item-value">10 Weeks</p>
+      </div>
+      <div>
+        <p class="info-item-label">Tools</p>
+        <p class="info-item-value">Figma · Claude AI<br>Maze · Principle</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="project-section" style="background: var(--bg)">
+    <div class="project-section-inner project-cols">
+      <div class="reveal">
+        <p class="project-section-label">01 — Overview</p>
+        <h2 class="project-section-title">Making personal finance feel human</h2>
+        <div class="project-body">
+          <p>Clari is a fintech startup building an AI-powered personal finance app for the Mexican market. When they came to me, their app had a 34% onboarding dropout rate and users were calling the dashboard "a spreadsheet that moves".</p>
+          <p>The brief was clear: redesign the product from onboarding to core flows, introduce an AI insights layer, and establish a design system the team could build on for the next 2 years.</p>
+        </div>
+        <div class="quote-block" style="margin-top:32px">
+          <p class="quote-text">"We want people to feel like they have a smart financial friend in their pocket — not another banking app."</p>
+          <p class="quote-attr">— CEO, Clari</p>
+        </div>
+      </div>
+      <div class="mockup mock-dark tall reveal" style="transition-delay:0.12s">
+        <div class="phone-trio" style="height:100%; align-items:center; justify-content:center">
+          <div style="width:70%; aspect-ratio:9/16; background:#0c0c20; border-radius:24px; border:1px solid rgba(255,255,255,0.1); display:flex; flex-direction:column; padding:20px;">
+            <div style="width:50%; height:6px; background:rgba(0,51,255,0.6); border-radius:3px; margin-bottom:16px;"></div>
+            <div style="width:100%; height:36%; background:rgba(0,51,255,0.18); border-radius:10px;"></div>
+            <div style="width:80%; height:7px; background:rgba(255,255,255,0.1); border-radius:3px; margin-top:14px;"></div>
+            <div style="width:55%; height:7px; background:rgba(255,255,255,0.06); border-radius:3px; margin-top:8px;"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px;">
+              <div style="height:48px; background:rgba(0,51,255,0.2); border-radius:8px;"></div>
+              <div style="height:48px; background:rgba(255,255,255,0.05); border-radius:8px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- RESEARCH -->
+  <section class="project-section" style="background: var(--white)">
+    <div class="project-section-inner">
+      <p class="project-section-label reveal">02 — Research</p>
+      <h2 class="project-section-title reveal">15 interviews. 3 brutal truths.</h2>
+      <div class="project-cols" style="margin-top: clamp(32px,4vw,56px)">
+        <div class="reveal">
+          <div class="project-body">
+            <p>I ran 15 moderated user interviews with Mexicans between 23 and 38 who actively managed their finances on mobile. Combined with session recordings and a competitive audit of 6 apps, three patterns emerged immediately.</p>
+          </div>
+          <div class="insight-list" style="margin-top:28px">
+            <div class="insight-item">
+              <span class="insight-num">01</span>
+              <p class="insight-text"><strong>Trust is the barrier.</strong> Users hesitated to link bank accounts because they didn't understand what data was being accessed or why.</p>
+            </div>
+            <div class="insight-item">
+              <span class="insight-num">02</span>
+              <p class="insight-text"><strong>Insights feel like lectures.</strong> The existing AI output was presented as a list of warnings. People felt judged, not helped.</p>
+            </div>
+            <div class="insight-item">
+              <span class="insight-num">03</span>
+              <p class="insight-text"><strong>Goals are aspirational, not transactional.</strong> Users wanted to see progress toward things they care about — not raw numbers.</p>
+            </div>
+          </div>
+        </div>
+        <div class="reveal" style="transition-delay:0.12s">
+          <div class="mockup mock-warm" style="margin-bottom:16px; aspect-ratio:4/3">
+            <div style="padding:24px; width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between;">
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                <div style="height:60px; background:rgba(12,12,12,0.07); border-radius:6px;"></div>
+                <div style="height:60px; background:rgba(12,12,12,0.07); border-radius:6px;"></div>
+                <div style="height:60px; background:rgba(12,12,12,0.07); border-radius:6px;"></div>
+              </div>
+              <div style="height:80px; background:rgba(0,51,255,0.08); border-radius:6px;"></div>
+              <div style="height:40px; background:rgba(12,12,12,0.05); border-radius:6px;"></div>
+            </div>
+          </div>
+          <div class="mockup mock-card" style="aspect-ratio:16/7">
+            <span class="mockup-label" style="color:#888">Affinity Map</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREENS GRID -->
+  <section class="project-section" style="background: var(--white); padding-top: 0">
+    <div class="project-section-inner">
+      <div class="mockup-grid reveal">
+        <div class="mockup mock-dark" style="aspect-ratio:9/16">
+          <div style="padding:16px; width:100%; height:100%; display:flex; flex-direction:column; gap:10px;">
+            <div style="width:55%; height:5px; background:rgba(0,51,255,0.5); border-radius:3px;"></div>
+            <div style="width:100%; flex:1; background:rgba(0,51,255,0.15); border-radius:8px;"></div>
+            <div style="width:75%; height:7px; background:rgba(255,255,255,0.1); border-radius:3px;"></div>
+            <div style="width:50%; height:7px; background:rgba(255,255,255,0.06); border-radius:3px;"></div>
+          </div>
+        </div>
+        <div class="mockup mock-dark" style="aspect-ratio:9/16">
+          <div style="padding:16px; width:100%; height:100%; display:flex; flex-direction:column; gap:10px;">
+            <div style="width:40%; height:5px; background:rgba(0,51,255,0.5); border-radius:3px;"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; flex:1;">
+              <div style="background:rgba(0,51,255,0.2); border-radius:8px;"></div>
+              <div style="background:rgba(255,255,255,0.05); border-radius:8px;"></div>
+              <div style="background:rgba(255,255,255,0.05); border-radius:8px;"></div>
+              <div style="background:rgba(0,51,255,0.12); border-radius:8px;"></div>
+            </div>
+            <div style="width:60%; height:7px; background:rgba(255,255,255,0.1); border-radius:3px;"></div>
+          </div>
+        </div>
+        <div class="mockup mock-dark" style="aspect-ratio:9/16">
+          <div style="padding:16px; width:100%; height:100%; display:flex; flex-direction:column; gap:10px;">
+            <div style="width:65%; height:5px; background:rgba(0,51,255,0.5); border-radius:3px;"></div>
+            <div style="width:100%; height:45%; background:rgba(0,51,255,0.1); border-radius:8px;"></div>
+            <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+              <div style="width:100%; height:28px; background:rgba(255,255,255,0.06); border-radius:5px;"></div>
+              <div style="width:100%; height:28px; background:rgba(255,255,255,0.06); border-radius:5px;"></div>
+              <div style="width:100%; height:28px; background:rgba(0,51,255,0.18); border-radius:5px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- SOLUTION -->
+  <section class="project-section" style="background: var(--bg)">
+    <div class="project-section-inner">
+      <p class="project-section-label reveal">03 — Solution</p>
+      <h2 class="project-section-title reveal">A financial companion, not a dashboard</h2>
+      <div class="project-cols" style="margin-top: clamp(32px,4vw,56px)">
+        <div class="reveal">
+          <div class="project-body">
+            <p>The redesign centered on three shifts: from data display to actionable story, from warnings to encouragement, and from raw metrics to goal-driven progress.</p>
+            <p>The onboarding flow was rebuilt around progressive trust — users could explore the app before linking accounts, and each permission request was accompanied by a plain-language explanation of exactly what it enabled.</p>
+            <p>The AI layer, powered by Claude, surfaced insights as conversational nudges at the moment they were most useful — after a purchase, before a bill, or when savings milestones were close.</p>
+          </div>
+        </div>
+        <div class="reveal" style="transition-delay:0.12s">
+          <div class="mockup mock-blue" style="aspect-ratio:4/3; margin-bottom:16px;">
+            <div style="padding:24px; width:100%; height:100%; display:flex; flex-direction:column; justify-content:flex-end; gap:10px;">
+              <div style="width:80%; height:9px; background:rgba(255,255,255,0.3); border-radius:5px;"></div>
+              <div style="width:55%; height:9px; background:rgba(255,255,255,0.2); border-radius:5px;"></div>
+              <div style="height:32px; background:rgba(255,255,255,0.15); border-radius:6px; margin-top:8px;"></div>
+            </div>
+          </div>
+          <div class="mockup mock-warm" style="aspect-ratio:4/3">
+            <div style="padding:20px; width:100%; height:100%; display:flex; flex-direction:column; gap:8px;">
+              <div style="width:100%; height:30%; background:rgba(0,51,255,0.08); border-radius:6px;"></div>
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; flex:1;">
+                <div style="background:rgba(12,12,12,0.06); border-radius:6px;"></div>
+                <div style="background:rgba(12,12,12,0.06); border-radius:6px;"></div>
+                <div style="background:rgba(0,51,255,0.1); border-radius:6px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FULL WIDTH -->
+  <div class="project-cover mock-dark reveal" style="aspect-ratio: 16/6">
+    <div style="display:flex; align-items:center; justify-content:center; gap:clamp(12px,3vw,40px); width:100%; height:100%; padding:clamp(20px,4vw,60px);">
+      <div style="flex:1; max-width:200px; aspect-ratio:9/16; background:#0c0c20; border-radius:24px; border:1px solid rgba(255,255,255,0.1); padding:16px; display:flex; flex-direction:column; gap:8px;">
+        <div style="width:60%; height:5px; background:rgba(0,51,255,0.6); border-radius:3px;"></div>
+        <div style="flex:1; background:rgba(0,51,255,0.15); border-radius:8px;"></div>
+        <div style="width:80%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px;"></div>
+        <div style="width:50%; height:6px; background:rgba(255,255,255,0.06); border-radius:3px;"></div>
+      </div>
+      <div style="flex:1; max-width:260px; aspect-ratio:9/16; background:#080818; border-radius:24px; border:1px solid rgba(0,51,255,0.3); padding:16px; display:flex; flex-direction:column; gap:8px; transform:translateY(-24px);">
+        <div style="width:45%; height:5px; background:rgba(0,51,255,0.8); border-radius:3px;"></div>
+        <div style="flex:2; background:rgba(0,51,255,0.25); border-radius:8px;"></div>
+        <div style="width:75%; height:6px; background:rgba(255,255,255,0.15); border-radius:3px;"></div>
+        <div style="flex:1; background:rgba(255,255,255,0.04); border-radius:8px;"></div>
+      </div>
+      <div style="flex:1; max-width:200px; aspect-ratio:9/16; background:#0c0c20; border-radius:24px; border:1px solid rgba(255,255,255,0.1); padding:16px; display:flex; flex-direction:column; gap:8px;">
+        <div style="width:55%; height:5px; background:rgba(0,51,255,0.6); border-radius:3px;"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; height:40%;">
+          <div style="background:rgba(0,51,255,0.2); border-radius:6px;"></div>
+          <div style="background:rgba(255,255,255,0.05); border-radius:6px;"></div>
+        </div>
+        <div style="flex:1; background:rgba(0,51,255,0.1); border-radius:8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTCOMES -->
+  <section class="project-section" style="background: var(--white)">
+    <div class="project-section-inner">
+      <p class="project-section-label reveal">04 — Results</p>
+      <h2 class="project-section-title reveal">Numbers that moved the needle</h2>
+      <div class="outcomes-grid">
+        <div class="outcome-item reveal">
+          <div class="outcome-num">+<span class="accent">42</span>%</div>
+          <p class="outcome-desc">Onboarding completion rate</p>
+        </div>
+        <div class="outcome-item reveal" style="transition-delay:0.1s">
+          <div class="outcome-num"><span class="accent">3</span>×</div>
+          <p class="outcome-desc">Faster core task completion</p>
+        </div>
+        <div class="outcome-item reveal" style="transition-delay:0.2s">
+          <div class="outcome-num">+<span class="accent">28</span>%</div>
+          <p class="outcome-desc">30-day user retention</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT -->
+  <section id="next-project">
+    <div class="next-inner">
+      <div class="reveal">
+        <p class="next-label">Next Project</p>
+        <h2 class="next-title">Axis —<br>Design System</h2>
+      </div>
+      <a href="project-2.html" class="next-arrow-btn reveal">View Project →</a>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <span class="footer-name">RUBÉN OLIVIER</span>
+    <span class="footer-copy">© 2026</span>
+    <nav class="footer-links">
+      <a href="#" class="footer-link">Dribbble</a>
+      <a href="#" class="footer-link">LinkedIn</a>
+      <a href="#" class="footer-link">Read.cv</a>
+    </nav>
+  </footer>
+
+  <script>
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').style.boxShadow = window.scrollY > 40 ? '0 2px 24px rgba(12,12,12,0.06)' : 'none';
+    }, { passive: true });
+  </script>
+</body>
+</html>
