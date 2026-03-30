@@ -660,6 +660,25 @@
        SELECTED WORK
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     #work { background: var(--white); }
+    .work-coming-soon {
+      padding: clamp(64px, 12vw, 120px) 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      margin-top: clamp(32px, 4vw, 48px);
+    }
+    .work-coming-label {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .work-coming-desc {
+      font-size: 16px;
+      color: var(--muted);
+    }
     .work-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -1665,55 +1684,9 @@
         <span class="section-num mono">03 —</span>
         <h2 class="section-title" data-en="SELECTED WORK" data-es="TRABAJO SELECCIONAO">SELECTED WORK</h2>
       </div>
-      <div class="work-grid">
-        <!-- Card 1 -->
-        <article class="project-card reveal" onclick="location.href='project.html'" style="cursor:pointer">
-          <div class="project-thumb thumb-1">
-            <div class="project-thumb-inner">
-              <div class="thumb-inner-content">
-                <span class="thumb-tag light" data-en="AI · Fintech · Product" data-es="IA · Fintech · Producto">AI · Fintech · Product</span>
-                <p class="thumb-headline light" data-en="Clari" data-es="Clari">Clari</p>
-              </div>
-            </div>
-          </div>
-          <div class="project-info">
-            <h3 class="project-name" data-en="Clari — AI Finance App" data-es="Clari — App Financiera con IA">Clari — AI Finance App</h3>
-            <p class="project-desc" data-en="End-to-end product design for an AI-powered personal finance app. Onboarding, dashboard, and insights flows built from zero." data-es="Diseño de producto completo para una app de finanzas personales con IA. Flujos de onboarding, dashboard e insights desde cero.">End-to-end product design for an AI-powered personal finance app. Onboarding, dashboard, and insights flows built from zero.</p>
-            <p class="project-meta mono" data-en="Product Design · 2024" data-es="Diseño de Producto · 2024">Product Design · 2024</p>
-          </div>
-        </article>
-        <!-- Card 2 -->
-        <article class="project-card reveal" onclick="location.href='project-2.html'" style="cursor:pointer; transition-delay: 0.1s">
-          <div class="project-thumb thumb-2">
-            <div class="project-thumb-inner">
-              <div class="thumb-inner-content">
-                <span class="thumb-tag dark" data-en="Design System · SaaS · B2B" data-es="Sistema de Diseño · SaaS · B2B">Design System · SaaS · B2B</span>
-                <p class="thumb-headline dark" data-en="Axis DS" data-es="Axis DS">Axis DS</p>
-              </div>
-            </div>
-          </div>
-          <div class="project-info">
-            <h3 class="project-name" data-en="Axis — Design System" data-es="Axis — Sistema de Diseño">Axis — Design System</h3>
-            <p class="project-desc" data-en="Scalable design system for a B2B SaaS platform. 80+ components, design tokens, and Figma-to-code documentation for a cross-functional team of 12." data-es="Sistema de diseño escalable para plataforma B2B SaaS. +80 componentes, tokens de diseño y documentación Figma-to-code para un equipo multidisciplinario de 12 personas.">Scalable design system for a B2B SaaS platform. 80+ components, design tokens, and Figma-to-code documentation for a cross-functional team of 12.</p>
-            <p class="project-meta mono" data-en="Design Systems · 2024" data-es="Sistemas de Diseño · 2024">Design Systems · 2024</p>
-          </div>
-        </article>
-        <!-- Card 3 -->
-        <article class="project-card reveal" onclick="location.href='project-3.html'" style="cursor:pointer; transition-delay: 0.2s">
-          <div class="project-thumb thumb-3">
-            <div class="project-thumb-inner">
-              <div class="thumb-inner-content">
-                <span class="thumb-tag light" data-en="Brand · AI · Campaign" data-es="Marca · IA · Campaña">Brand · AI · Campaign</span>
-                <p class="thumb-headline light" data-en="Nómada" data-es="Nómada">Nómada</p>
-              </div>
-            </div>
-          </div>
-          <div class="project-info">
-            <h3 class="project-name" data-en="Nómada — Brand Identity" data-es="Nómada — Identidad de Marca">Nómada — Brand Identity</h3>
-            <p class="project-desc" data-en="Full brand identity and AI-generated campaign for a travel lifestyle brand targeting Gen Z. Visual system, motion guidelines, and social kit." data-es="Identidad de marca completa y campaña generada con IA para una marca de viajes dirigida a Gen Z. Sistema visual, guía de movimiento y kit de redes sociales.">Full brand identity and AI-generated campaign for a travel lifestyle brand targeting Gen Z. Visual system, motion guidelines, and social kit.</p>
-            <p class="project-meta mono" data-en="Brand Design · 2023" data-es="Diseño de Marca · 2023">Brand Design · 2023</p>
-          </div>
-        </article>
+      <div class="work-coming-soon reveal">
+        <p class="work-coming-label mono" data-en="— COMING SOON" data-es="— PRÓXIMAMENTE">— COMING SOON</p>
+        <p class="work-coming-desc" data-en="Case studies in progress. Check back soon." data-es="Casos de estudio en preparación. Vuelve pronto.">Case studies in progress. Check back soon.</p>
       </div>
     </div>
   </section>
