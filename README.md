@@ -1,153 +1,78 @@
-# rubenolivier.com — Portfolio
+# Rubén Olivier — Portfolio
 
-Sitio web personal de **Rubén Olivier**, AI Creative Designer.
+Sitio estático de diseño visual, identidad de marca y UX/UI.
 
-🌐 **Live:** tu-dominio.com
-📁 **Repo:** https://github.com/products-rubenolivier/portfolio
+- Sitio público: https://rubenolivier.com
+- Repositorio: https://github.com/products-rubenolivier/portfolio
+- HTML, CSS y JavaScript sin dependencias de compilación.
+- Geist Medium para cuerpos y labels; Geist Semibold para subtítulos.
 
----
+## Archivos principales
 
-## Stack
+| Archivo | Contenido |
+| --- | --- |
+| `index.html` | Home, proyectos, acerca, servicios y método |
+| `project.html` | Clari: demo de producto digital |
+| `project-2.html` | Axis DS: demo de sistema de diseño |
+| `project-3.html` | Nómada: demo de identidad |
+| `styles.css` | Estilos compartidos y adaptación a móvil |
+| `site.js` | Idiomas, menú, gradiente, header y entradas del footer |
+| `assets/brand/` | PNG originales de marca, con transparencia |
+| `favicon.svg` | Isotipo centrado en un lienzo cuadrado |
 
-| Capa | Tecnología |
-|------|-----------|
-| Markup | HTML5 semántico |
-| Estilos | CSS3 (variables, grid, clamp) — sin frameworks |
-| Scripts | Vanilla JS — sin dependencias |
-| Fuentes | DM Mono (Google Fonts) + Non Natural Grotesk Plain + PP Neue Montreal (locales) |
-| Iconos | Remix Icons 4.3 (CDN) |
-| Formulario | EmailJS |
-| Deploy | GitHub → Hostinger (webhook automático) |
+Los casos son ejemplos conceptuales señalados como demos, pendientes de sustituir
+por trabajo real. Las cifras de las interfaces son datos ficticios de la maqueta.
 
----
+## Vista local
 
-## Estructura de archivos
+Con Node.js instalado:
 
-```
-portfolio/
-├── index.html          # Página principal
-├── project.html        # Caso de estudio: Clari — AI Finance App
-├── project-2.html      # Caso de estudio: Axis DS — Design System
-├── project-3.html      # Caso de estudio: Nómada — Identidad de Marca
-├── RubenOlivier Profile.png  # Foto de perfil (bio)
-├── RubenOlivier.jpg          # Foto alternativa
-└── RO.png                    # Logo / avatar
+```sh
+node preview.cjs
 ```
 
----
+Abrir http://localhost:4173/. El servidor solo escucha en la máquina local y sirve
+los archivos permitidos del sitio; no expone el repositorio ni la configuración.
+No es necesario instalar paquetes ni ejecutar un build.
 
-## Secciones — index.html
+## Edición
 
-| # | ID | Nombre |
-|---|----|--------|
-| — | `#hero` | Hero — headline principal |
-| — | `.marquee-band` | Ticker de habilidades |
-| 01 | `#about` | BIO — texto + foto + stats + frameworks |
-| 02 | `#stack` | STACK — Herramientas + Servicios (accordion) |
-| 03 | `#work` | SELECTED WORK — 3 proyectos |
-| 04 | `#process` | METHOD — proceso de diseño |
-| — | `#contact` | CTA — contacto |
-| — | `#footer` | Footer |
+El contenido de cada página usa `data-es` y `data-en`. Editar ambos atributos y el
+texto visible; el idioma elegido se conserva cuando el navegador lo permite.
+Los cambios visuales comunes se realizan en `styles.css`.
 
----
+El método profesional es **Entender → Articular → Diseñar → Activar**. El proceso de
+cada caso puede variar según sea producto, sistema o marca.
 
-## Sistema bilingüe (EN / ES)
+El contacto usa enlaces `mailto:hola@rubenolivier.com`; abre el cliente de correo.
+Esta versión no usa el anterior formulario de EmailJS.
 
-Cada texto editable tiene atributos `data-en` y `data-es`. El JS los intercambia al hacer clic en EN / ES.
+## Interacciones
 
-```html
-<h2 data-en="SELECTED WORK" data-es="TRABAJO SELECCIONADO">SELECTED WORK</h2>
-```
+- El hero permanece fijo durante el primer tramo del scroll para explorar el
+  gradiente. Después continúa hacia Proyectos. El enlace de proyectos permite
+  saltar directamente a la sección.
+- El header es transparente sobre el hero y blanco sobre las siguientes secciones.
+- Los servicios se expanden por mouse, táctil o teclado; sus enlaces usan subrayado
+  animado. El footer entra al llegar con el scroll y se prepara de nuevo al subir.
+- Se respeta `prefers-reduced-motion`, incluyendo la eliminación del tramo fijo.
+- Los textos y enlaces quedan disponibles cuando JavaScript no está activo.
 
-Para editar un texto: modificar el atributo correspondiente y el contenido visible.
+## Publicación
 
----
+El flujo documentado del proyecto es un push a `main` en GitHub seguido del
+webhook de Hostinger. Hay que verificar acceso de escritura y entrega del webhook:
+la documentación por sí sola no confirma que la conexión esté activa.
 
-## Cómo editar contenido
+No subir credenciales al repositorio. No usar `git add -A` si hay experimentos o
+archivos de trabajo ajenos al sitio. La carpeta local `iteration-01/` contiene la
+vista de iteraciones y no es necesaria para publicar los archivos principales.
 
-### Cambiar texto de la bio
-Buscar en `index.html`:
-```html
-<p class="about-bio" data-en="..." data-es="...">
-```
-Modificar los atributos y el texto visible.
+Antes de subir, comprobar navegación, assets, idiomas, servicios, menú móvil y
+animaciones. Después del despliegue, verificar el HTML público y los tres casos.
 
-### Agregar/cambiar proyecto
-Editar la tarjeta en `#work` y crear/modificar el archivo `project-N.html` correspondiente.
+## Reversión
 
-### Cambiar stats (50+, 6+, 20+)
-Buscar `.stat-num` en `index.html`.
-
-### Cambiar foto de perfil
-Reemplazar `RubenOlivier Profile.png` con la nueva imagen (mismo nombre) y hacer push.
-
----
-
-## Formulario de contacto — EmailJS
-
-Configurado con EmailJS. Las credenciales están en el `<script>` al final de `index.html`:
-
-```js
-emailjs.init('TU_PUBLIC_KEY')
-// service_id: 'TU_SERVICE_ID'
-// template_id: 'TU_TEMPLATE_ID'
-```
-
-Para cambiar: entrar a emailjs.com → actualizar los IDs.
-
----
-
-## Deployment
-
-### Flujo automático
-```
-Editar código → git push → Hostinger se actualiza solo (webhook)
-```
-
-### Comandos git
-```bash
-# Ver cambios pendientes
-git status
-
-# Subir todos los cambios
-git add -A
-git commit -m "descripción del cambio"
-git push
-```
-
-### Primer setup en una máquina nueva
-```bash
-git clone https://github.com/products-rubenolivier/portfolio.git
-cd portfolio
-# Abrir index.html en el navegador o usar un servidor local:
-npx serve -l 8766
-```
-
----
-
-## Redes sociales — footer
-
-| Red | URL |
-|-----|-----|
-| Dribbble | https://dribbble.com/ux_rolivier |
-| Instagram | https://www.instagram.com/ux_rolivier/ |
-| Behance | https://www.behance.net/ruben-olivier |
-| LinkedIn | https://www.linkedin.com/in/ruben-olivier/ |
-| X | https://x.com/uxrolivier |
-
-Para actualizar: buscar `.footer-icon-link` en `index.html` y cambiar el `href`.
-
----
-
-## Dependencias externas (CDN)
-
-```html
-<!-- Fuentes -->
-https://fonts.googleapis.com/css2?family=DM+Mono
-
-<!-- Iconos -->
-https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css
-
-<!-- Formulario -->
-https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js
-```
+La versión anterior a esta integración está en el commit `98dc46b`. Para volver
+al estado previo, revertir el commit de integración y publicar esa reversión.
+La verificación pública del sitio debe repetirse después del despliegue.
